@@ -2,13 +2,14 @@ import uuid
 from datetime import datetime
 from typing import Annotated
 
-from pydantic import AwareDatetime, BaseModel, StringConstraints
+from pydantic import AwareDatetime, BaseModel, Field, StringConstraints
 
 from app.core.schemas import OrmModel, PaginatedResponse
 from app.event.models import EventKind, Venue
 
 Title = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=120)]
 ShortText = Annotated[str, StringConstraints(strip_whitespace=True, max_length=200)]
+Score = Annotated[int, Field(ge=0, le=99)]
 
 
 class EventCreate(BaseModel):
@@ -34,6 +35,8 @@ class EventUpdate(BaseModel):
     venue: Venue | None = None
     notes: str | None = None
     is_cancelled: bool | None = None
+    score_for: Score | None = None
+    score_against: Score | None = None
 
 
 class EventResponse(OrmModel):
@@ -49,6 +52,8 @@ class EventResponse(OrmModel):
     venue: Venue | None
     notes: str | None
     is_cancelled: bool
+    score_for: int | None
+    score_against: int | None
     created_at: datetime
 
 

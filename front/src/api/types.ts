@@ -4,1654 +4,2814 @@
  */
 
 export interface paths {
-  "/api/v1/teams": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/clubs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Clubs
+         * @description List clubs.
+         */
+        get: operations["list_clubs_api_v1_clubs_get"];
+        put?: never;
+        /**
+         * Create Club
+         * @description Register a club; club names are unique.
+         */
+        post: operations["create_club_api_v1_clubs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Teams
-     * @description List teams, optionally filtered by season.
-     */
-    get: operations["list_teams_api_v1_teams_get"];
-    put?: never;
-    /**
-     * Create Team
-     * @description Create a team; the name must be unique within a season.
-     */
-    post: operations["create_team_api_v1_teams_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/teams/{team_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/clubs/{club_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Club
+         * @description Get a club by id.
+         */
+        get: operations["get_club_api_v1_clubs__club_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Club
+         * @description Delete a club with all its teams and their data.
+         */
+        delete: operations["delete_club_api_v1_clubs__club_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Partial Update Club
+         * @description Partially update a club.
+         */
+        patch: operations["partial_update_club_api_v1_clubs__club_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Team
-     * @description Get a team by id.
-     */
-    get: operations["get_team_api_v1_teams__team_id__get"];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Team
-     * @description Delete a team with its members, events and invitations.
-     */
-    delete: operations["delete_team_api_v1_teams__team_id__delete"];
-    options?: never;
-    head?: never;
-    /**
-     * Partial Update Team
-     * @description Partially update a team.
-     */
-    patch: operations["partial_update_team_api_v1_teams__team_id__patch"];
-    trace?: never;
-  };
-  "/api/v1/members": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Teams
+         * @description List teams, optionally filtered by club and season.
+         */
+        get: operations["list_teams_api_v1_teams_get"];
+        put?: never;
+        /**
+         * Create Team
+         * @description Create a club team; the name must be unique within the club and season.
+         */
+        post: operations["create_team_api_v1_teams_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Members
-     * @description List a team's roster, optionally filtered by role.
-     */
-    get: operations["list_members_api_v1_members_get"];
-    put?: never;
-    /**
-     * Create Member
-     * @description Add a member to a team; shirt numbers are unique within a team.
-     */
-    post: operations["create_member_api_v1_members_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/members/{member_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/teams/{team_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Team
+         * @description Get a team by id.
+         */
+        get: operations["get_team_api_v1_teams__team_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Team
+         * @description Delete a team with its members, events and invitations.
+         */
+        delete: operations["delete_team_api_v1_teams__team_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Partial Update Team
+         * @description Partially update a team.
+         */
+        patch: operations["partial_update_team_api_v1_teams__team_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Member
-     * @description Get a member by id.
-     */
-    get: operations["get_member_api_v1_members__member_id__get"];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Member
-     * @description Remove a member from the team.
-     */
-    delete: operations["delete_member_api_v1_members__member_id__delete"];
-    options?: never;
-    head?: never;
-    /**
-     * Partial Update Member
-     * @description Partially update a member.
-     */
-    patch: operations["partial_update_member_api_v1_members__member_id__patch"];
-    trace?: never;
-  };
-  "/api/v1/events": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Members
+         * @description List a team's roster, optionally filtered by role.
+         */
+        get: operations["list_members_api_v1_members_get"];
+        put?: never;
+        /**
+         * Create Member
+         * @description Add a member to a team; shirt numbers are unique within a team.
+         */
+        post: operations["create_member_api_v1_members_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Events
-     * @description List a team's events in chronological order, optionally within [from, to).
-     */
-    get: operations["list_events_api_v1_events_get"];
-    put?: never;
-    /**
-     * Create Event
-     * @description Schedule a match, a training session or another team event.
-     */
-    post: operations["create_event_api_v1_events_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/events/{event_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/members/{member_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Member
+         * @description Get a member by id.
+         */
+        get: operations["get_member_api_v1_members__member_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Member
+         * @description Remove a member from the team.
+         */
+        delete: operations["delete_member_api_v1_members__member_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Partial Update Member
+         * @description Partially update a member.
+         */
+        patch: operations["partial_update_member_api_v1_members__member_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Event
-     * @description Get an event by id.
-     */
-    get: operations["get_event_api_v1_events__event_id__get"];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Event
-     * @description Delete an event and its invitations.
-     */
-    delete: operations["delete_event_api_v1_events__event_id__delete"];
-    options?: never;
-    head?: never;
-    /**
-     * Partial Update Event
-     * @description Partially update an event, including cancelling it.
-     */
-    patch: operations["partial_update_event_api_v1_events__event_id__patch"];
-    trace?: never;
-  };
-  "/api/v1/invitations": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Events
+         * @description List a team's events in chronological order, optionally within [from, to).
+         */
+        get: operations["list_events_api_v1_events_get"];
+        put?: never;
+        /**
+         * Create Event
+         * @description Schedule a match, a training session, a tournament or another team event.
+         */
+        post: operations["create_event_api_v1_events_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Invitations
-     * @description List an event's invitations with each member's availability.
-     */
-    get: operations["list_invitations_api_v1_invitations_get"];
-    put?: never;
-    /**
-     * Create Invitations
-     * @description Invite members (or the whole roster) to an event; returns only new invitations.
-     */
-    post: operations["create_invitations_api_v1_invitations_post"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/invitations/summary": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/events/{event_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Event
+         * @description Get an event by id.
+         */
+        get: operations["get_event_api_v1_events__event_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Event
+         * @description Delete an event and its invitations.
+         */
+        delete: operations["delete_event_api_v1_events__event_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Partial Update Event
+         * @description Partially update an event, including cancelling it or recording the score.
+         */
+        patch: operations["partial_update_event_api_v1_events__event_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Availability Summary
-     * @description Count an event's invitations per availability.
-     */
-    get: operations["get_availability_summary_api_v1_invitations_summary_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/invitations/{invitation_id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Invitations
+         * @description List an event's invitations with each member's availability.
+         */
+        get: operations["list_invitations_api_v1_invitations_get"];
+        put?: never;
+        /**
+         * Create Invitations
+         * @description Invite members (or the whole roster) to an event; returns only new invitations.
+         */
+        post: operations["create_invitations_api_v1_invitations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /**
-     * Delete Invitation
-     * @description Withdraw an invitation.
-     */
-    delete: operations["delete_invitation_api_v1_invitations__invitation_id__delete"];
-    options?: never;
-    head?: never;
-    /**
-     * Partial Update Invitation
-     * @description Record a member's availability for the event.
-     */
-    patch: operations["partial_update_invitation_api_v1_invitations__invitation_id__patch"];
-    trace?: never;
-  };
-  "/health": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/invitations/summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Availability Summary
+         * @description Count an event's invitations per availability.
+         */
+        get: operations["get_availability_summary_api_v1_invitations_summary_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Health
-     * @description Liveness probe.
-     */
-    get: operations["health_health_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/api/v1/invitations/reminders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Reminders
+         * @description Remind every member who has not answered the event's invitation yet.
+         */
+        post: operations["create_reminders_api_v1_invitations_reminders_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/invitations/{invitation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Invitation
+         * @description Withdraw an invitation.
+         */
+        delete: operations["delete_invitation_api_v1_invitations__invitation_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Partial Update Invitation
+         * @description Record a member's availability for the event.
+         */
+        patch: operations["partial_update_invitation_api_v1_invitations__invitation_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/lineups/formations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Formations
+         * @description List the supported tactical formations (11, 8 and 5-a-side).
+         */
+        get: operations["list_formations_api_v1_lineups_formations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/lineups/{event_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Lineup
+         * @description Get an event's lineup, flagging selected members who are not available.
+         */
+        get: operations["get_lineup_api_v1_lineups__event_id__get"];
+        /**
+         * Update Lineup
+         * @description Create or fully replace an event's lineup (formation, starters, substitutes).
+         */
+        put: operations["update_lineup_api_v1_lineups__event_id__put"];
+        post?: never;
+        /**
+         * Delete Lineup
+         * @description Delete an event's lineup.
+         */
+        delete: operations["delete_lineup_api_v1_lineups__event_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/match-facts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Match Facts
+         * @description List a match's goals and cards in chronological order.
+         */
+        get: operations["list_match_facts_api_v1_match_facts_get"];
+        put?: never;
+        /**
+         * Create Match Fact
+         * @description Record a goal (with optional assist) or a card for one of the team's players.
+         */
+        post: operations["create_match_fact_api_v1_match_facts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/match-facts/{fact_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Match Fact
+         * @description Delete a match fact.
+         */
+        delete: operations["delete_match_fact_api_v1_match_facts__fact_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stats/teams/{team_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Team Stats
+         * @description Season record of a team and its players: goals, assists, cards, selections, attendance.
+         */
+        get: operations["get_team_stats_api_v1_stats_teams__team_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Health
+         * @description Liveness probe.
+         */
+        get: operations["health_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /**
-     * Availability
-     * @enum {string}
-     */
-    Availability: "pending" | "available" | "uncertain" | "unavailable";
-    /** AvailabilitySummary */
-    AvailabilitySummary: {
-      /**
-       * Event Id
-       * Format: uuid
-       */
-      event_id: string;
-      /** Invited */
-      invited: number;
-      /** Pending */
-      pending: number;
-      /** Available */
-      available: number;
-      /** Uncertain */
-      uncertain: number;
-      /** Unavailable */
-      unavailable: number;
+    schemas: {
+        /**
+         * Availability
+         * @enum {string}
+         */
+        Availability: "pending" | "available" | "uncertain" | "unavailable";
+        /** AvailabilitySummary */
+        AvailabilitySummary: {
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /** Invited */
+            invited: number;
+            /** Pending */
+            pending: number;
+            /** Available */
+            available: number;
+            /** Uncertain */
+            uncertain: number;
+            /** Unavailable */
+            unavailable: number;
+        };
+        /** ClubCreate */
+        ClubCreate: {
+            /** Name */
+            name: string;
+            /** City */
+            city?: string | null;
+            /**
+             * Primary Color
+             * @default #16a34a
+             * @example #16a34a
+             */
+            primary_color: string;
+        };
+        /** ClubResponse */
+        ClubResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** City */
+            city: string | null;
+            /** Primary Color */
+            primary_color: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** ClubUpdate */
+        ClubUpdate: {
+            /** Name */
+            name?: string | null;
+            /** City */
+            city?: string | null;
+            /** Primary Color */
+            primary_color?: string | null;
+        };
+        /** ErrorResponse */
+        ErrorResponse: {
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+            /**
+             * Errors
+             * @default []
+             */
+            errors: components["schemas"]["FieldError"][];
+            /** Request Id */
+            request_id?: string | null;
+        };
+        /** EventCreate */
+        EventCreate: {
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            kind: components["schemas"]["EventKind"];
+            /** Title */
+            title: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at?: string | null;
+            /** Meeting At */
+            meeting_at?: string | null;
+            /** Location */
+            location?: string | null;
+            /** Opponent */
+            opponent?: string | null;
+            venue?: components["schemas"]["Venue"] | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /**
+         * EventKind
+         * @enum {string}
+         */
+        EventKind: "match" | "training" | "tournament" | "other";
+        /** EventResponse */
+        EventResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            kind: components["schemas"]["EventKind"];
+            /** Title */
+            title: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at: string | null;
+            /** Meeting At */
+            meeting_at: string | null;
+            /** Location */
+            location: string | null;
+            /** Opponent */
+            opponent: string | null;
+            venue: components["schemas"]["Venue"] | null;
+            /** Notes */
+            notes: string | null;
+            /** Is Cancelled */
+            is_cancelled: boolean;
+            /** Score For */
+            score_for: number | null;
+            /** Score Against */
+            score_against: number | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** EventUpdate */
+        EventUpdate: {
+            /** Title */
+            title?: string | null;
+            /** Starts At */
+            starts_at?: string | null;
+            /** Ends At */
+            ends_at?: string | null;
+            /** Meeting At */
+            meeting_at?: string | null;
+            /** Location */
+            location?: string | null;
+            /** Opponent */
+            opponent?: string | null;
+            venue?: components["schemas"]["Venue"] | null;
+            /** Notes */
+            notes?: string | null;
+            /** Is Cancelled */
+            is_cancelled?: boolean | null;
+            /** Score For */
+            score_for?: number | null;
+            /** Score Against */
+            score_against?: number | null;
+        };
+        /**
+         * FactKind
+         * @enum {string}
+         */
+        FactKind: "goal" | "yellow_card" | "red_card";
+        /** FieldError */
+        FieldError: {
+            /** Field */
+            field: string;
+            /** Message */
+            message: string;
+        };
+        /** FormationResponse */
+        FormationResponse: {
+            /** Code */
+            code: string;
+            /** Players */
+            players: number;
+            /** Lines */
+            lines: number[];
+        };
+        /** InvitationCreate */
+        InvitationCreate: {
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /**
+             * Member Ids
+             * @description Members to invite; the whole roster when omitted
+             */
+            member_ids?: string[] | null;
+        };
+        /** InvitationReply */
+        InvitationReply: {
+            /**
+             * Availability
+             * @enum {string}
+             */
+            availability: "available" | "uncertain" | "unavailable";
+            /** Comment */
+            comment?: string | null;
+        };
+        /** InvitationResponse */
+        InvitationResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            availability: components["schemas"]["Availability"];
+            /** Comment */
+            comment: string | null;
+            /** Responded At */
+            responded_at: string | null;
+            /** Reminder Count */
+            reminder_count: number;
+            /** Last Reminded At */
+            last_reminded_at: string | null;
+            member: components["schemas"]["InvitedMember"];
+        };
+        /** InvitedMember */
+        InvitedMember: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** First Name */
+            first_name: string;
+            /** Last Name */
+            last_name: string;
+            role: components["schemas"]["MemberRole"];
+            position: components["schemas"]["PlayerPosition"] | null;
+            /** Shirt Number */
+            shirt_number: number | null;
+        };
+        /** LineupResponse */
+        LineupResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /** Formation */
+            formation: string;
+            /** Is Published */
+            is_published: boolean;
+            /** Slots */
+            slots: components["schemas"]["SlotResponse"][];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * Unavailable Member Ids
+             * @description Selected members who did not answer 'available'
+             * @default []
+             */
+            unavailable_member_ids: string[];
+        };
+        /** LineupWrite */
+        LineupWrite: {
+            /**
+             * Formation
+             * @example 4-4-2
+             */
+            formation: string;
+            /**
+             * Is Published
+             * @default false
+             */
+            is_published: boolean;
+            /** Slots */
+            slots: components["schemas"]["SlotInput"][];
+        };
+        /** MatchFactCreate */
+        MatchFactCreate: {
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            kind: components["schemas"]["FactKind"];
+            /**
+             * Member Id
+             * Format: uuid
+             */
+            member_id: string;
+            /** Assist Member Id */
+            assist_member_id?: string | null;
+            /** Minute */
+            minute?: number | null;
+        };
+        /** MatchFactResponse */
+        MatchFactResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            kind: components["schemas"]["FactKind"];
+            /** Minute */
+            minute: number | null;
+            member: components["schemas"]["InvitedMember"];
+            assist_member: components["schemas"]["InvitedMember"] | null;
+        };
+        /** MemberCreate */
+        MemberCreate: {
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            /** First Name */
+            first_name: string;
+            /** Last Name */
+            last_name: string;
+            /** Email */
+            email?: string | null;
+            /** @default player */
+            role: components["schemas"]["MemberRole"];
+            position?: components["schemas"]["PlayerPosition"] | null;
+            /** Shirt Number */
+            shirt_number?: number | null;
+        };
+        /** MemberResponse */
+        MemberResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            /** First Name */
+            first_name: string;
+            /** Last Name */
+            last_name: string;
+            /** Email */
+            email: string | null;
+            role: components["schemas"]["MemberRole"];
+            position: components["schemas"]["PlayerPosition"] | null;
+            /** Shirt Number */
+            shirt_number: number | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /**
+         * MemberRole
+         * @enum {string}
+         */
+        MemberRole: "player" | "coach" | "staff";
+        /** MemberUpdate */
+        MemberUpdate: {
+            /** First Name */
+            first_name?: string | null;
+            /** Last Name */
+            last_name?: string | null;
+            /** Email */
+            email?: string | null;
+            role?: components["schemas"]["MemberRole"] | null;
+            position?: components["schemas"]["PlayerPosition"] | null;
+            /** Shirt Number */
+            shirt_number?: number | null;
+        };
+        /** PaginatedResponse[ClubResponse] */
+        PaginatedResponse_ClubResponse_: {
+            /** Items */
+            items: components["schemas"]["ClubResponse"][];
+            /** Total */
+            total: number;
+            /** Skip */
+            skip: number;
+            /** Limit */
+            limit: number;
+            /** Has More */
+            has_more: boolean;
+        };
+        /** PaginatedResponse[EventResponse] */
+        PaginatedResponse_EventResponse_: {
+            /** Items */
+            items: components["schemas"]["EventResponse"][];
+            /** Total */
+            total: number;
+            /** Skip */
+            skip: number;
+            /** Limit */
+            limit: number;
+            /** Has More */
+            has_more: boolean;
+        };
+        /** PaginatedResponse[InvitationResponse] */
+        PaginatedResponse_InvitationResponse_: {
+            /** Items */
+            items: components["schemas"]["InvitationResponse"][];
+            /** Total */
+            total: number;
+            /** Skip */
+            skip: number;
+            /** Limit */
+            limit: number;
+            /** Has More */
+            has_more: boolean;
+        };
+        /** PaginatedResponse[MatchFactResponse] */
+        PaginatedResponse_MatchFactResponse_: {
+            /** Items */
+            items: components["schemas"]["MatchFactResponse"][];
+            /** Total */
+            total: number;
+            /** Skip */
+            skip: number;
+            /** Limit */
+            limit: number;
+            /** Has More */
+            has_more: boolean;
+        };
+        /** PaginatedResponse[MemberResponse] */
+        PaginatedResponse_MemberResponse_: {
+            /** Items */
+            items: components["schemas"]["MemberResponse"][];
+            /** Total */
+            total: number;
+            /** Skip */
+            skip: number;
+            /** Limit */
+            limit: number;
+            /** Has More */
+            has_more: boolean;
+        };
+        /** PaginatedResponse[TeamResponse] */
+        PaginatedResponse_TeamResponse_: {
+            /** Items */
+            items: components["schemas"]["TeamResponse"][];
+            /** Total */
+            total: number;
+            /** Skip */
+            skip: number;
+            /** Limit */
+            limit: number;
+            /** Has More */
+            has_more: boolean;
+        };
+        /**
+         * PlayerPosition
+         * @enum {string}
+         */
+        PlayerPosition: "goalkeeper" | "defender" | "midfielder" | "forward";
+        /** PlayerStats */
+        PlayerStats: {
+            member: components["schemas"]["InvitedMember"];
+            /** Selections */
+            selections: number;
+            /** Goals */
+            goals: number;
+            /** Assists */
+            assists: number;
+            /** Yellow Cards */
+            yellow_cards: number;
+            /** Red Cards */
+            red_cards: number;
+            /** Invited */
+            invited: number;
+            /** Present */
+            present: number;
+            /** Attendance Rate */
+            attendance_rate: number | null;
+        };
+        /** ReminderRequest */
+        ReminderRequest: {
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+        };
+        /** ReminderResult */
+        ReminderResult: {
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /** Reminded */
+            reminded: number;
+        };
+        /** SlotInput */
+        SlotInput: {
+            /**
+             * Member Id
+             * Format: uuid
+             */
+            member_id: string;
+            role: components["schemas"]["SlotRole"];
+            /**
+             * Position Index
+             * @description Starter position; null on the bench
+             */
+            position_index?: number | null;
+        };
+        /** SlotResponse */
+        SlotResponse: {
+            role: components["schemas"]["SlotRole"];
+            /** Position Index */
+            position_index: number | null;
+            member: components["schemas"]["InvitedMember"];
+        };
+        /**
+         * SlotRole
+         * @enum {string}
+         */
+        SlotRole: "starter" | "substitute";
+        /**
+         * TeamCategory
+         * @enum {string}
+         */
+        TeamCategory: "u7" | "u9" | "u11" | "u13" | "u15" | "u17" | "u19" | "senior" | "veteran";
+        /** TeamCreate */
+        TeamCreate: {
+            /**
+             * Club Id
+             * Format: uuid
+             */
+            club_id: string;
+            /** Name */
+            name: string;
+            category: components["schemas"]["TeamCategory"];
+            /**
+             * Season
+             * @example 2026-2027
+             */
+            season: string;
+            /**
+             * Color
+             * @default #16a34a
+             * @example #16a34a
+             */
+            color: string;
+        };
+        /** TeamResponse */
+        TeamResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Club Id
+             * Format: uuid
+             */
+            club_id: string;
+            /** Name */
+            name: string;
+            category: components["schemas"]["TeamCategory"];
+            /** Season */
+            season: string;
+            /** Color */
+            color: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** TeamStats */
+        TeamStats: {
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            /** Played */
+            played: number;
+            /** Wins */
+            wins: number;
+            /** Draws */
+            draws: number;
+            /** Losses */
+            losses: number;
+            /** Goals For */
+            goals_for: number;
+            /** Goals Against */
+            goals_against: number;
+            /** Players */
+            players: components["schemas"]["PlayerStats"][];
+        };
+        /** TeamUpdate */
+        TeamUpdate: {
+            /** Name */
+            name?: string | null;
+            category?: components["schemas"]["TeamCategory"] | null;
+            /** Season */
+            season?: string | null;
+            /** Color */
+            color?: string | null;
+        };
+        /**
+         * Venue
+         * @enum {string}
+         */
+        Venue: "home" | "away";
     };
-    /** ErrorResponse */
-    ErrorResponse: {
-      /** Code */
-      code: string;
-      /** Message */
-      message: string;
-      /**
-       * Errors
-       * @default []
-       */
-      errors: components["schemas"]["FieldError"][];
-      /** Request Id */
-      request_id?: string | null;
-    };
-    /** EventCreate */
-    EventCreate: {
-      /**
-       * Team Id
-       * Format: uuid
-       */
-      team_id: string;
-      kind: components["schemas"]["EventKind"];
-      /** Title */
-      title: string;
-      /**
-       * Starts At
-       * Format: date-time
-       */
-      starts_at: string;
-      /** Ends At */
-      ends_at?: string | null;
-      /** Meeting At */
-      meeting_at?: string | null;
-      /** Location */
-      location?: string | null;
-      /** Opponent */
-      opponent?: string | null;
-      venue?: components["schemas"]["Venue"] | null;
-      /** Notes */
-      notes?: string | null;
-    };
-    /**
-     * EventKind
-     * @enum {string}
-     */
-    EventKind: "match" | "training" | "other";
-    /** EventResponse */
-    EventResponse: {
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /**
-       * Team Id
-       * Format: uuid
-       */
-      team_id: string;
-      kind: components["schemas"]["EventKind"];
-      /** Title */
-      title: string;
-      /**
-       * Starts At
-       * Format: date-time
-       */
-      starts_at: string;
-      /** Ends At */
-      ends_at: string | null;
-      /** Meeting At */
-      meeting_at: string | null;
-      /** Location */
-      location: string | null;
-      /** Opponent */
-      opponent: string | null;
-      venue: components["schemas"]["Venue"] | null;
-      /** Notes */
-      notes: string | null;
-      /** Is Cancelled */
-      is_cancelled: boolean;
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-    };
-    /** EventUpdate */
-    EventUpdate: {
-      /** Title */
-      title?: string | null;
-      /** Starts At */
-      starts_at?: string | null;
-      /** Ends At */
-      ends_at?: string | null;
-      /** Meeting At */
-      meeting_at?: string | null;
-      /** Location */
-      location?: string | null;
-      /** Opponent */
-      opponent?: string | null;
-      venue?: components["schemas"]["Venue"] | null;
-      /** Notes */
-      notes?: string | null;
-      /** Is Cancelled */
-      is_cancelled?: boolean | null;
-    };
-    /** FieldError */
-    FieldError: {
-      /** Field */
-      field: string;
-      /** Message */
-      message: string;
-    };
-    /** InvitationCreate */
-    InvitationCreate: {
-      /**
-       * Event Id
-       * Format: uuid
-       */
-      event_id: string;
-      /**
-       * Member Ids
-       * @description Members to invite; the whole roster when omitted
-       */
-      member_ids?: string[] | null;
-    };
-    /** InvitationReply */
-    InvitationReply: {
-      /**
-       * Availability
-       * @enum {string}
-       */
-      availability: "available" | "uncertain" | "unavailable";
-      /** Comment */
-      comment?: string | null;
-    };
-    /** InvitationResponse */
-    InvitationResponse: {
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /**
-       * Event Id
-       * Format: uuid
-       */
-      event_id: string;
-      availability: components["schemas"]["Availability"];
-      /** Comment */
-      comment: string | null;
-      /** Responded At */
-      responded_at: string | null;
-      member: components["schemas"]["InvitedMember"];
-    };
-    /** InvitedMember */
-    InvitedMember: {
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** First Name */
-      first_name: string;
-      /** Last Name */
-      last_name: string;
-      role: components["schemas"]["MemberRole"];
-      position: components["schemas"]["PlayerPosition"] | null;
-      /** Shirt Number */
-      shirt_number: number | null;
-    };
-    /** MemberCreate */
-    MemberCreate: {
-      /**
-       * Team Id
-       * Format: uuid
-       */
-      team_id: string;
-      /** First Name */
-      first_name: string;
-      /** Last Name */
-      last_name: string;
-      /** Email */
-      email?: string | null;
-      /** @default player */
-      role: components["schemas"]["MemberRole"];
-      position?: components["schemas"]["PlayerPosition"] | null;
-      /** Shirt Number */
-      shirt_number?: number | null;
-    };
-    /** MemberResponse */
-    MemberResponse: {
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /**
-       * Team Id
-       * Format: uuid
-       */
-      team_id: string;
-      /** First Name */
-      first_name: string;
-      /** Last Name */
-      last_name: string;
-      /** Email */
-      email: string | null;
-      role: components["schemas"]["MemberRole"];
-      position: components["schemas"]["PlayerPosition"] | null;
-      /** Shirt Number */
-      shirt_number: number | null;
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-    };
-    /**
-     * MemberRole
-     * @enum {string}
-     */
-    MemberRole: "player" | "coach" | "staff";
-    /** MemberUpdate */
-    MemberUpdate: {
-      /** First Name */
-      first_name?: string | null;
-      /** Last Name */
-      last_name?: string | null;
-      /** Email */
-      email?: string | null;
-      role?: components["schemas"]["MemberRole"] | null;
-      position?: components["schemas"]["PlayerPosition"] | null;
-      /** Shirt Number */
-      shirt_number?: number | null;
-    };
-    /** PaginatedResponse[EventResponse] */
-    PaginatedResponse_EventResponse_: {
-      /** Items */
-      items: components["schemas"]["EventResponse"][];
-      /** Total */
-      total: number;
-      /** Skip */
-      skip: number;
-      /** Limit */
-      limit: number;
-      /** Has More */
-      has_more: boolean;
-    };
-    /** PaginatedResponse[InvitationResponse] */
-    PaginatedResponse_InvitationResponse_: {
-      /** Items */
-      items: components["schemas"]["InvitationResponse"][];
-      /** Total */
-      total: number;
-      /** Skip */
-      skip: number;
-      /** Limit */
-      limit: number;
-      /** Has More */
-      has_more: boolean;
-    };
-    /** PaginatedResponse[MemberResponse] */
-    PaginatedResponse_MemberResponse_: {
-      /** Items */
-      items: components["schemas"]["MemberResponse"][];
-      /** Total */
-      total: number;
-      /** Skip */
-      skip: number;
-      /** Limit */
-      limit: number;
-      /** Has More */
-      has_more: boolean;
-    };
-    /** PaginatedResponse[TeamResponse] */
-    PaginatedResponse_TeamResponse_: {
-      /** Items */
-      items: components["schemas"]["TeamResponse"][];
-      /** Total */
-      total: number;
-      /** Skip */
-      skip: number;
-      /** Limit */
-      limit: number;
-      /** Has More */
-      has_more: boolean;
-    };
-    /**
-     * PlayerPosition
-     * @enum {string}
-     */
-    PlayerPosition: "goalkeeper" | "defender" | "midfielder" | "forward";
-    /**
-     * TeamCategory
-     * @enum {string}
-     */
-    TeamCategory: "u7" | "u9" | "u11" | "u13" | "u15" | "u17" | "u19" | "senior" | "veteran";
-    /** TeamCreate */
-    TeamCreate: {
-      /** Name */
-      name: string;
-      category: components["schemas"]["TeamCategory"];
-      /**
-       * Season
-       * @example 2026-2027
-       */
-      season: string;
-    };
-    /** TeamResponse */
-    TeamResponse: {
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Name */
-      name: string;
-      category: components["schemas"]["TeamCategory"];
-      /** Season */
-      season: string;
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-    };
-    /** TeamUpdate */
-    TeamUpdate: {
-      /** Name */
-      name?: string | null;
-      category?: components["schemas"]["TeamCategory"] | null;
-      /** Season */
-      season?: string | null;
-    };
-    /**
-     * Venue
-     * @enum {string}
-     */
-    Venue: "home" | "away";
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  list_teams_api_v1_teams_get: {
-    parameters: {
-      query?: {
-        season?: string | null;
-        skip?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    list_clubs_api_v1_clubs_get: {
+        parameters: {
+            query?: {
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponse_ClubResponse_"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    create_club_api_v1_clubs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["PaginatedResponse_TeamResponse_"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClubCreate"];
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClubResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  create_team_api_v1_teams_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_club_api_v1_clubs__club_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                club_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClubResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TeamCreate"];
-      };
+    delete_club_api_v1_clubs__club_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                club_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
+    partial_update_club_api_v1_clubs__club_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                club_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["TeamResponse"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClubUpdate"];
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClubResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  get_team_api_v1_teams__team_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        team_id: string;
-      };
-      cookie?: never;
+    list_teams_api_v1_teams_get: {
+        parameters: {
+            query?: {
+                club_id?: string | null;
+                season?: string | null;
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponse_TeamResponse_"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    create_team_api_v1_teams_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["TeamResponse"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TeamCreate"];
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  delete_team_api_v1_teams__team_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        team_id: string;
-      };
-      cookie?: never;
+    get_team_api_v1_teams__team_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    delete_team_api_v1_teams__team_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  partial_update_team_api_v1_teams__team_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        team_id: string;
-      };
-      cookie?: never;
+    partial_update_team_api_v1_teams__team_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TeamUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TeamUpdate"];
-      };
+    list_members_api_v1_members_get: {
+        parameters: {
+            query: {
+                team_id: string;
+                role?: components["schemas"]["MemberRole"] | null;
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponse_MemberResponse_"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    create_member_api_v1_members_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["TeamResponse"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MemberCreate"];
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  list_members_api_v1_members_get: {
-    parameters: {
-      query: {
-        team_id: string;
-        role?: components["schemas"]["MemberRole"] | null;
-        skip?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    get_member_api_v1_members__member_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                member_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    delete_member_api_v1_members__member_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                member_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["PaginatedResponse_MemberResponse_"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  create_member_api_v1_members_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    partial_update_member_api_v1_members__member_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                member_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MemberUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MemberResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["MemberCreate"];
-      };
+    list_events_api_v1_events_get: {
+        parameters: {
+            query: {
+                team_id: string;
+                kind?: components["schemas"]["EventKind"] | null;
+                from?: string | null;
+                to?: string | null;
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponse_EventResponse_"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
+    create_event_api_v1_events_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["MemberResponse"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventCreate"];
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  get_member_api_v1_members__member_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        member_id: string;
-      };
-      cookie?: never;
+    get_event_api_v1_events__event_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    delete_event_api_v1_events__event_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["MemberResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  delete_member_api_v1_members__member_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        member_id: string;
-      };
-      cookie?: never;
+    partial_update_event_api_v1_events__event_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    list_invitations_api_v1_invitations_get: {
+        parameters: {
+            query: {
+                event_id: string;
+                availability?: components["schemas"]["Availability"] | null;
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponse_InvitationResponse_"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  partial_update_member_api_v1_members__member_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        member_id: string;
-      };
-      cookie?: never;
+    create_invitations_api_v1_invitations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationResponse"][];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["MemberUpdate"];
-      };
+    get_availability_summary_api_v1_invitations_summary_get: {
+        parameters: {
+            query: {
+                event_id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AvailabilitySummary"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    create_reminders_api_v1_invitations_reminders_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["MemberResponse"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReminderRequest"];
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReminderResult"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  list_events_api_v1_events_get: {
-    parameters: {
-      query: {
-        team_id: string;
-        kind?: components["schemas"]["EventKind"] | null;
-        from?: string | null;
-        to?: string | null;
-        skip?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
+    delete_invitation_api_v1_invitations__invitation_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    partial_update_invitation_api_v1_invitations__invitation_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["PaginatedResponse_EventResponse_"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvitationReply"];
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  create_event_api_v1_events_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    list_formations_api_v1_lineups_formations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FormationResponse"][];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["EventCreate"];
-      };
+    get_lineup_api_v1_lineups__event_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LineupResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
+    update_lineup_api_v1_lineups__event_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["EventResponse"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LineupWrite"];
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LineupResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  get_event_api_v1_events__event_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        event_id: string;
-      };
-      cookie?: never;
+    delete_lineup_api_v1_lineups__event_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    list_match_facts_api_v1_match_facts_get: {
+        parameters: {
+            query: {
+                event_id: string;
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["EventResponse"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponse_MatchFactResponse_"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  delete_event_api_v1_events__event_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        event_id: string;
-      };
-      cookie?: never;
+    create_match_fact_api_v1_match_facts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MatchFactCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MatchFactResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    delete_match_fact_api_v1_match_facts__fact_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fact_id: string;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
     };
-  };
-  partial_update_event_api_v1_events__event_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        event_id: string;
-      };
-      cookie?: never;
+    get_team_stats_api_v1_stats_teams__team_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamStats"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
     };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["EventUpdate"];
-      };
+    health_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: string;
+                    };
+                };
+            };
+        };
     };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EventResponse"];
-        };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  list_invitations_api_v1_invitations_get: {
-    parameters: {
-      query: {
-        event_id: string;
-        availability?: components["schemas"]["Availability"] | null;
-        skip?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaginatedResponse_InvitationResponse_"];
-        };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  create_invitations_api_v1_invitations_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InvitationCreate"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["InvitationResponse"][];
-        };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  get_availability_summary_api_v1_invitations_summary_get: {
-    parameters: {
-      query: {
-        event_id: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AvailabilitySummary"];
-        };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  delete_invitation_api_v1_invitations__invitation_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invitation_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  partial_update_invitation_api_v1_invitations__invitation_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invitation_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InvitationReply"];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["InvitationResponse"];
-        };
-      };
-      /** @description Resource not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      /** @description Validation or business rule error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  health_health_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            [key: string]: string;
-          };
-        };
-      };
-    };
-  };
 }

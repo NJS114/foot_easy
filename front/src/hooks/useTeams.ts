@@ -4,14 +4,19 @@ import { unwrap } from "@/api/errors";
 
 export const teamKeys = {
   all: ["teams"] as const,
+  byClub: (clubId: string) => ["teams", "club", clubId] as const,
   detail: (teamId: string) => ["teams", teamId] as const,
 };
 
-export function useTeams() {
+export function useTeams(clubId: string) {
   return useQuery({
-    queryKey: teamKeys.all,
+    queryKey: teamKeys.byClub(clubId),
     queryFn: async () =>
-      unwrap(await apiClient.GET("/api/v1/teams", { params: { query: { limit: 100 } } })),
+      unwrap(
+        await apiClient.GET("/api/v1/teams", {
+          params: { query: { club_id: clubId, limit: 100 } },
+        }),
+      ),
   });
 }
 

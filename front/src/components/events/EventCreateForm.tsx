@@ -12,7 +12,7 @@ import { localInputToIso } from "@/lib/dates";
 type Kind = EventCreate["kind"];
 type Venue = NonNullable<EventCreate["venue"]>;
 
-const KINDS: Kind[] = ["match", "training", "other"];
+const KINDS: Kind[] = ["match", "training", "tournament", "other"];
 const VENUES: Venue[] = ["home", "away"];
 
 function toEventCreate(teamId: string, data: FormData): EventCreate {

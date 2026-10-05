@@ -17,6 +17,15 @@ class InvitationCreate(BaseModel):
     ] = None
 
 
+class ReminderRequest(BaseModel):
+    event_id: uuid.UUID
+
+
+class ReminderResult(BaseModel):
+    event_id: uuid.UUID
+    reminded: int
+
+
 class InvitationReply(BaseModel):
     availability: Literal[Availability.AVAILABLE, Availability.UNCERTAIN, Availability.UNAVAILABLE]
     comment: Annotated[str, StringConstraints(strip_whitespace=True, max_length=200)] | None = None
@@ -37,6 +46,8 @@ class InvitationResponse(OrmModel):
     availability: Availability
     comment: str | None
     responded_at: datetime | None
+    reminder_count: int
+    last_reminded_at: datetime | None
     member: InvitedMember
 
 

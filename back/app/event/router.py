@@ -46,7 +46,7 @@ async def get_event(event_id: uuid.UUID, service: EventServiceDep) -> EventRespo
 
 @router.post("", response_model=EventResponse, status_code=status.HTTP_201_CREATED)
 async def create_event(data: EventCreate, service: EventServiceDep) -> EventResponse:
-    """Schedule a match, a training session or another team event."""
+    """Schedule a match, a training session, a tournament or another team event."""
     return await service.create_event(data)
 
 
@@ -54,7 +54,7 @@ async def create_event(data: EventCreate, service: EventServiceDep) -> EventResp
 async def partial_update_event(
     event_id: uuid.UUID, data: EventUpdate, service: EventServiceDep
 ) -> EventResponse:
-    """Partially update an event, including cancelling it."""
+    """Partially update an event, including cancelling it or recording the score."""
     return await service.update_event(event_id, data)
 
 

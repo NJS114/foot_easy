@@ -1,9 +1,17 @@
 # Foot Easy
 
-Application de gestion d'équipes de football amateur : équipes et effectif, calendrier des
-matchs et entraînements, convocations et disponibilités. La feuille de route complète
-(compositions, statistiques et live, championnats, messagerie, club, cotisations…) est décrite
-dans [`specs/`](./specs).
+Logiciel de gestion de club de football amateur, organisé en modules :
+
+| Module | État |
+|---|---|
+| Tableau de bord | Prochains événements du club, équipes |
+| Calendrier & Planning | Agenda du club par jour, filtres équipe / type |
+| Gestion sportive | Équipes (catégorie, saison, couleur), effectif, événements (match, entraînement, tournoi), convocations et relances, compositions (8 schémas, foot à 11 / 8 / 5), score et faits de match, statistiques et assiduité |
+| Gestion des membres · Communication & Messagerie · Inscriptions & Paiements · Visibilité sponsors | Bientôt — périmètre décrit dans [`specs/`](./specs) |
+
+La feuille de route complète (15 épopées, 49 user stories) est dans [`specs/`](./specs) ;
+l'organisation en espace club est décrite dans
+[ADR-0004](./docs/adr/0004-club-space-and-module-navigation.md).
 
 ## Stack
 

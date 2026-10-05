@@ -1,6 +1,6 @@
 # US 012 — Relances automatiques des non-répondants
 
-status: To Do
+status: In Progress
 estimate: M
 parent: epic-03
 
@@ -23,3 +23,8 @@ En tant que coach, je veux que les joueurs sans réponse soient relancés automa
 - tasks
 - service
 - front
+
+## Notes
+
+- Livré : relance manuelle des non-répondants (`POST /invitations/reminders`), compteur et date de dernière relance affichés.
+- Reste : envoi réel (e-mail / push) et déclenchement planifié à J-2, dépendant de us-034.

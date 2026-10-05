@@ -110,3 +110,35 @@ async def test_get_event_unknown_returns_404(client: AsyncClient):
 
 async def test_delete_event_returns_204(client: AsyncClient, match: Event):
     assert (await client.delete(f"/events/{match.id}")).status_code == 204
+
+
+async def test_partial_update_match_records_score(client: AsyncClient, match: Event):
+    resp = await client.patch(f"/events/{match.id}", json={"score_for": 3, "score_against": 1})
+
+    assert resp.status_code == 200
+    assert (resp.json()["score_for"], resp.json()["score_against"]) == (3, 1)
+
+
+async def test_score_on_training_returns_422(client: AsyncClient, team: Team):
+    payload = new_match(team, kind="training", title="Seance", opponent=None, venue=None)
+    training = (await client.post("/events", json=payload)).json()
+
+    resp = await client.patch(f"/events/{training['id']}", json={"score_for": 1})
+
+    assert resp.status_code == 422
+    assert resp.json()["code"] == "score_not_allowed"
+
+
+async def test_negative_score_returns_422(client: AsyncClient, match: Event):
+    resp = await client.patch(f"/events/{match.id}", json={"score_for": -1})
+
+    assert resp.json()["errors"][0]["field"] == "score_for"
+
+
+async def test_create_tournament_without_opponent_returns_201(client: AsyncClient, team: Team):
+    payload = new_match(team, kind="tournament", title="Tournoi U13", opponent=None, venue=None)
+
+    resp = await client.post("/events", json=payload)
+
+    assert resp.status_code == 201
+    assert resp.json()["kind"] == "tournament"

@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient, type EventCreate } from "@/api/client";
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiClient, type EventCreate, type EventUpdate } from "@/api/client";
 import { unwrap } from "@/api/errors";
 
 export const eventKeys = {
@@ -7,15 +7,30 @@ export const eventKeys = {
   detail: (eventId: string) => ["events", eventId] as const,
 };
 
+async function fetchTeamEvents(teamId: string) {
+  return unwrap(
+    await apiClient.GET("/api/v1/events", { params: { query: { team_id: teamId, limit: 100 } } }),
+  );
+}
+
 export function useEvents(teamId: string) {
-  return useQuery({
-    queryKey: eventKeys.byTeam(teamId),
-    queryFn: async () =>
-      unwrap(
-        await apiClient.GET("/api/v1/events", {
-          params: { query: { team_id: teamId, limit: 100 } },
-        }),
-      ),
+  return useQuery({ queryKey: eventKeys.byTeam(teamId), queryFn: () => fetchTeamEvents(teamId) });
+}
+
+/** Events of several teams merged in chronological order (the club calendar). */
+export function useTeamsEvents(teamIds: string[]) {
+  return useQueries({
+    queries: teamIds.map((teamId) => ({
+      queryKey: eventKeys.byTeam(teamId),
+      queryFn: () => fetchTeamEvents(teamId),
+    })),
+    combine: (results) => ({
+      events: results
+        .flatMap((result) => result.data?.items ?? [])
+        .sort((a, b) => a.starts_at.localeCompare(b.starts_at)),
+      isLoading: results.some((result) => result.isLoading),
+      error: results.find((result) => result.error)?.error ?? null,
+    }),
   });
 }
 
@@ -41,19 +56,20 @@ export function useCreateEvent() {
   });
 }
 
-export function useCancelEvent() {
+/** Partial update: cancellation, score, schedule… */
+export function useUpdateEvent(eventId: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (eventId: string) =>
+    mutationFn: async (body: EventUpdate) =>
       unwrap(
         await apiClient.PATCH("/api/v1/events/{event_id}", {
           params: { path: { event_id: eventId } },
-          body: { is_cancelled: true },
+          body,
         }),
       ),
     onSuccess: (event) => {
       queryClient.setQueryData(eventKeys.detail(event.id), event);
-      return queryClient.invalidateQueries({ queryKey: eventKeys.byTeam(event.team_id) });
+      return queryClient.invalidateQueries({ queryKey: ["events", "team"] });
     },
   });
 }

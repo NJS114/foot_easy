@@ -6,7 +6,12 @@ from app.event.service import EventService
 from app.invitation.exceptions import InvitationNotFoundError, MemberNotInTeamError
 from app.invitation.models import Availability, Invitation
 from app.invitation.repository import InvitationRepository
-from app.invitation.schemas import AvailabilitySummary, InvitationCreate, InvitationReply
+from app.invitation.schemas import (
+    AvailabilitySummary,
+    InvitationCreate,
+    InvitationReply,
+    ReminderResult,
+)
 from app.member.repository import MemberRepository
 
 
@@ -50,6 +55,19 @@ class InvitationService:
         ]
         await self.repository.add_all(created)
         return [await self.repository.get(invitation.id) for invitation in created]
+
+    async def remind_pending(self, event_id: uuid.UUID) -> ReminderResult:
+        """Flag every unanswered invitation as reminded; delivery is handled by notifications."""
+        event = await self.event_service.get_event(event_id)
+        if event.is_cancelled:
+            raise EventCancelledError(event.id)
+        pending = await self.repository.list_pending(event.id)
+        now = utc_now()
+        for invitation in pending:
+            invitation.reminder_count += 1
+            invitation.last_reminded_at = now
+        await self.repository.commit()
+        return ReminderResult(event_id=event.id, reminded=len(pending))
 
     async def reply(self, invitation_id: uuid.UUID, data: InvitationReply) -> Invitation:
         invitation = await self.get_invitation(invitation_id)

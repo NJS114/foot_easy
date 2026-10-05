@@ -5,8 +5,9 @@ from app.event.exceptions import (
     EventNotFoundError,
     InvalidEventScheduleError,
     MatchDetailsRequiredError,
+    ScoreNotAllowedError,
 )
-from app.event.models import Event, EventKind
+from app.event.models import COMPETITIVE_KINDS, Event, EventKind
 from app.event.repository import EventRepository
 from app.event.schemas import EventCreate, EventUpdate
 from app.team.service import TeamService
@@ -20,6 +21,9 @@ def check_event_rules(event: Event) -> None:
         raise InvalidEventScheduleError("The meeting time must be before the start")
     if event.kind == EventKind.MATCH and (not event.opponent or event.venue is None):
         raise MatchDetailsRequiredError()
+    has_score = event.score_for is not None or event.score_against is not None
+    if has_score and event.kind not in COMPETITIVE_KINDS:
+        raise ScoreNotAllowedError()
 
 
 class EventService:

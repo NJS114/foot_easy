@@ -25,3 +25,7 @@ class MemberRepository(BaseRepository[Member]):
     async def list_ids_by_team(self, team_id: uuid.UUID) -> list[uuid.UUID]:
         rows = await self.session.scalars(select(Member.id).where(Member.team_id == team_id))
         return list(rows)
+
+    async def list_player_ids_by_team(self, team_id: uuid.UUID) -> set[uuid.UUID]:
+        query = select(Member.id).where(Member.team_id == team_id, Member.role == MemberRole.PLAYER)
+        return set(await self.session.scalars(query))

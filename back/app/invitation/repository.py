@@ -40,6 +40,12 @@ class InvitationRepository(BaseRepository[Invitation]):
         query = select(Invitation.member_id).where(Invitation.event_id == event_id)
         return set(await self.session.scalars(query))
 
+    async def list_pending(self, event_id: uuid.UUID) -> list[Invitation]:
+        query = select(Invitation).where(
+            Invitation.event_id == event_id, Invitation.availability == Availability.PENDING
+        )
+        return list(await self.session.scalars(query))
+
     async def add_all(self, invitations: list[Invitation]) -> None:
         self.session.add_all(invitations)
         await self.session.commit()

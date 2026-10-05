@@ -40,6 +40,9 @@ class BaseRepository[ModelT: Base]:
         await self.session.refresh(entity)
         return entity
 
+    async def commit(self) -> None:
+        await self.session.commit()
+
     async def delete(self, entity: ModelT) -> None:
         await self.session.delete(entity)
         await self.session.commit()

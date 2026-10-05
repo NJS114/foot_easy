@@ -7,6 +7,7 @@ from sqlalchemy import event
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
+from app.club.models import Club
 from app.core.database import get_session
 from app.event.models import Event, EventKind, Venue
 from app.main import app
@@ -50,9 +51,15 @@ async def persist(session: AsyncSession, entity):
 
 
 @pytest.fixture
-async def team(session: AsyncSession) -> Team:
+async def club(session: AsyncSession) -> Club:
+    return await persist(session, Club(name="AS Foot Easy", city="Lyon"))
+
+
+@pytest.fixture
+async def team(session: AsyncSession, club: Club) -> Team:
     return await persist(
-        session, Team(name="FC Easy", category=TeamCategory.SENIOR, season="2026-2027")
+        session,
+        Team(club_id=club.id, name="FC Easy", category=TeamCategory.SENIOR, season="2026-2027"),
     )
 
 

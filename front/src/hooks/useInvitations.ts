@@ -53,3 +53,14 @@ export function useReplyInvitation(eventId: string) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: invitationKeys.byEvent(eventId) }),
   });
 }
+
+export function useRemindPending(eventId: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () =>
+      unwrap(
+        await apiClient.POST("/api/v1/invitations/reminders", { body: { event_id: eventId } }),
+      ),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: invitationKeys.byEvent(eventId) }),
+  });
+}

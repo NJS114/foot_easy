@@ -120,3 +120,33 @@ async def test_delete_invitation_returns_204(client: AsyncClient, match: Event, 
 
     assert (await client.delete(f"/invitations/{invitation['id']}")).status_code == 204
     assert (await client.delete(f"/invitations/{invitation['id']}")).status_code == 404
+
+
+async def test_reminders_target_only_pending_invitations(
+    client: AsyncClient, match: Event, player: Member, coach: Member
+):
+    invitations = await invite_roster(client, match)
+    await client.patch(f"/invitations/{invitations[0]['id']}", json={"availability": "available"})
+
+    resp = await client.post("/invitations/reminders", json={"event_id": str(match.id)})
+    listed = (await client.get("/invitations", params={"event_id": str(match.id)})).json()
+
+    assert resp.status_code == 200
+    assert resp.json()["reminded"] == 1
+    counts = {i["id"]: i["reminder_count"] for i in listed["items"]}
+    assert counts[invitations[0]["id"]] == 0
+    assert counts[invitations[1]["id"]] == 1
+
+
+async def test_reminders_on_cancelled_event_returns_422(client: AsyncClient, match: Event):
+    await client.patch(f"/events/{match.id}", json={"is_cancelled": True})
+
+    resp = await client.post("/invitations/reminders", json={"event_id": str(match.id)})
+
+    assert resp.json()["code"] == "event_cancelled"
+
+
+async def test_reminders_unknown_event_returns_404(client: AsyncClient):
+    resp = await client.post("/invitations/reminders", json={"event_id": str(uuid.uuid4())})
+
+    assert resp.status_code == 404

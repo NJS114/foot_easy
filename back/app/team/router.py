@@ -3,6 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, status
 
+from app.club.router import get_club_service
 from app.core.dependencies import PaginationDep, SessionDep
 from app.core.schemas import ERROR_RESPONSES
 from app.team.repository import TeamRepository
@@ -13,7 +14,7 @@ router = APIRouter(prefix="/teams", tags=["Teams"], responses=ERROR_RESPONSES)
 
 
 def get_team_service(session: SessionDep) -> TeamService:
-    return TeamService(TeamRepository(session))
+    return TeamService(TeamRepository(session), get_club_service(session))
 
 
 TeamServiceDep = Annotated[TeamService, Depends(get_team_service)]
@@ -23,10 +24,11 @@ TeamServiceDep = Annotated[TeamService, Depends(get_team_service)]
 async def list_teams(
     service: TeamServiceDep,
     pagination: PaginationDep,
+    club_id: uuid.UUID | None = None,
     season: Annotated[str | None, Query(pattern=r"^\d{4}-\d{4}$")] = None,
 ) -> TeamListResponse:
-    """List teams, optionally filtered by season."""
-    items, total = await service.list_teams(season, pagination.skip, pagination.limit)
+    """List teams, optionally filtered by club and season."""
+    items, total = await service.list_teams(club_id, season, pagination.skip, pagination.limit)
     return TeamListResponse.build(items, total, pagination.skip, pagination.limit)
 
 
@@ -38,7 +40,7 @@ async def get_team(team_id: uuid.UUID, service: TeamServiceDep) -> TeamResponse:
 
 @router.post("", response_model=TeamResponse, status_code=status.HTTP_201_CREATED)
 async def create_team(data: TeamCreate, service: TeamServiceDep) -> TeamResponse:
-    """Create a team; the name must be unique within a season."""
+    """Create a club team; the name must be unique within the club and season."""
     return await service.create_team(data)
 
 

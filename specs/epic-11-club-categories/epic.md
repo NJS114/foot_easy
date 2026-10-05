@@ -1,6 +1,6 @@
 # Epic 11 — Club & catégories
 
-status: To Do
+status: In Progress
 
 ## Problem
 

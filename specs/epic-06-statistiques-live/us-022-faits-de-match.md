@@ -1,6 +1,6 @@
 # US 022 — Saisir le score et les faits de match
 
-status: To Do
+status: Done
 estimate: M
 parent: epic-06
 

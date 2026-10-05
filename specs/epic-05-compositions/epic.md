@@ -1,6 +1,6 @@
 # Epic 05 — Compositions d'équipe
 
-status: To Do
+status: In Progress
 
 ## Problem
 

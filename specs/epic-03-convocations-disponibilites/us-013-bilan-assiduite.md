@@ -1,6 +1,6 @@
 # US 013 — Bilan d'assiduité de la saison
 
-status: To Do
+status: Done
 estimate: S
 parent: epic-03
 

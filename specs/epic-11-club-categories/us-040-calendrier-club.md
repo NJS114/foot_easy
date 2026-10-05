@@ -1,6 +1,6 @@
 # US 040 — Calendrier partagé du club
 
-status: To Do
+status: In Progress
 estimate: S
 parent: epic-11
 
@@ -23,3 +23,8 @@ En tant que membre du club, je veux un calendrier commun filtrable par équipe a
 - service
 - router
 - front
+
+## Notes
+
+- Livré : agenda du club groupé par jour, filtres par équipe et par type.
+- Reste : vues semaine / mois / saison et événements club (AG, réunions) avec invités ciblés.

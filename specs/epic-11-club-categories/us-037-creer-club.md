@@ -1,6 +1,6 @@
 # US 037 — Créer un club regroupant plusieurs équipes
 
-status: To Do
+status: Done
 estimate: M
 parent: epic-11
 
@@ -23,3 +23,8 @@ En tant que dirigeant, je veux créer mon club et y rattacher ses équipes afin 
 - service
 - router
 - front
+
+## Notes
+
+- Livré : écran « Inscrire mon club », équipes rattachées au club avec une couleur, navigation club à 7 modules.
+- Un espace = un club pour l'instant ; le multi-club viendra avec les comptes (epic-04).

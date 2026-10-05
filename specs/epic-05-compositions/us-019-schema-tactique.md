@@ -1,6 +1,6 @@
 # US 019 — Choisir un schéma tactique
 
-status: To Do
+status: Done
 estimate: S
 parent: epic-05
 

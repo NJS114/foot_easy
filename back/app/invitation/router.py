@@ -14,6 +14,8 @@ from app.invitation.schemas import (
     InvitationListResponse,
     InvitationReply,
     InvitationResponse,
+    ReminderRequest,
+    ReminderResult,
 )
 from app.invitation.service import InvitationService
 from app.member.repository import MemberRepository
@@ -58,6 +60,12 @@ async def create_invitations(
 ) -> list[InvitationResponse]:
     """Invite members (or the whole roster) to an event; returns only new invitations."""
     return await service.invite_members(data)
+
+
+@router.post("/reminders", response_model=ReminderResult)
+async def create_reminders(data: ReminderRequest, service: InvitationServiceDep) -> ReminderResult:
+    """Remind every member who has not answered the event's invitation yet."""
+    return await service.remind_pending(data.event_id)
 
 
 @router.patch("/{invitation_id}", response_model=InvitationResponse)

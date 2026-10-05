@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy import ForeignKey, SmallInteger, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base, IdMixin, TimestampMixin, UtcDateTime, str_enum
@@ -33,5 +33,7 @@ class Invitation(IdMixin, TimestampMixin, Base):
     )
     comment: Mapped[str | None] = mapped_column(String(200))
     responded_at: Mapped[datetime | None] = mapped_column(UtcDateTime)
+    reminder_count: Mapped[int] = mapped_column(SmallInteger, default=0)
+    last_reminded_at: Mapped[datetime | None] = mapped_column(UtcDateTime)
 
     member: Mapped[Member] = relationship(lazy="raise")

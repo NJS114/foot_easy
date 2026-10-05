@@ -2,18 +2,363 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Foot Easy API",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "paths": {
+    "/api/v1/clubs": {
+      "get": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "List Clubs",
+        "description": "List clubs.",
+        "operationId": "list_clubs_api_v1_clubs_get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse_ClubResponse_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Create Club",
+        "description": "Register a club; club names are unique.",
+        "operationId": "create_club_api_v1_clubs_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClubCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClubResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/clubs/{club_id}": {
+      "get": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Get Club",
+        "description": "Get a club by id.",
+        "operationId": "get_club_api_v1_clubs__club_id__get",
+        "parameters": [
+          {
+            "name": "club_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Club Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClubResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Partial Update Club",
+        "description": "Partially update a club.",
+        "operationId": "partial_update_club_api_v1_clubs__club_id__patch",
+        "parameters": [
+          {
+            "name": "club_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Club Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClubUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClubResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Delete Club",
+        "description": "Delete a club with all its teams and their data.",
+        "operationId": "delete_club_api_v1_clubs__club_id__delete",
+        "parameters": [
+          {
+            "name": "club_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Club Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/teams": {
       "get": {
         "tags": [
           "Teams"
         ],
         "summary": "List Teams",
-        "description": "List teams, optionally filtered by season.",
+        "description": "List teams, optionally filtered by club and season.",
         "operationId": "list_teams_api_v1_teams_get",
         "parameters": [
+          {
+            "name": "club_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Club Id"
+            }
+          },
           {
             "name": "season",
             "in": "query",
@@ -103,7 +448,7 @@
           "Teams"
         ],
         "summary": "Create Team",
-        "description": "Create a team; the name must be unique within a season.",
+        "description": "Create a club team; the name must be unique within the club and season.",
         "operationId": "create_team_api_v1_teams_post",
         "requestBody": {
           "required": true,
@@ -845,7 +1190,7 @@
           "Events"
         ],
         "summary": "Create Event",
-        "description": "Schedule a match, a training session or another team event.",
+        "description": "Schedule a match, a training session, a tournament or another team event.",
         "operationId": "create_event_api_v1_events_post",
         "requestBody": {
           "required": true,
@@ -969,7 +1314,7 @@
           "Events"
         ],
         "summary": "Partial Update Event",
-        "description": "Partially update an event, including cancelling it.",
+        "description": "Partially update an event, including cancelling it or recording the score.",
         "operationId": "partial_update_event_api_v1_events__event_id__patch",
         "parameters": [
           {
@@ -1323,6 +1668,68 @@
         }
       }
     },
+    "/api/v1/invitations/reminders": {
+      "post": {
+        "tags": [
+          "Invitations"
+        ],
+        "summary": "Create Reminders",
+        "description": "Remind every member who has not answered the event's invitation yet.",
+        "operationId": "create_reminders_api_v1_invitations_reminders_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReminderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReminderResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/invitations/{invitation_id}": {
       "patch": {
         "tags": [
@@ -1452,6 +1859,521 @@
         }
       }
     },
+    "/api/v1/lineups/formations": {
+      "get": {
+        "tags": [
+          "Lineups"
+        ],
+        "summary": "List Formations",
+        "description": "List the supported tactical formations (11, 8 and 5-a-side).",
+        "operationId": "list_formations_api_v1_lineups_formations_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FormationResponse"
+                  },
+                  "type": "array",
+                  "title": "Response List Formations Api V1 Lineups Formations Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/lineups/{event_id}": {
+      "get": {
+        "tags": [
+          "Lineups"
+        ],
+        "summary": "Get Lineup",
+        "description": "Get an event's lineup, flagging selected members who are not available.",
+        "operationId": "get_lineup_api_v1_lineups__event_id__get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LineupResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Lineups"
+        ],
+        "summary": "Update Lineup",
+        "description": "Create or fully replace an event's lineup (formation, starters, substitutes).",
+        "operationId": "update_lineup_api_v1_lineups__event_id__put",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LineupWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LineupResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lineups"
+        ],
+        "summary": "Delete Lineup",
+        "description": "Delete an event's lineup.",
+        "operationId": "delete_lineup_api_v1_lineups__event_id__delete",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/match-facts": {
+      "get": {
+        "tags": [
+          "Match facts"
+        ],
+        "summary": "List Match Facts",
+        "description": "List a match's goals and cards in chronological order.",
+        "operationId": "list_match_facts_api_v1_match_facts_get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Event Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse_MatchFactResponse_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Match facts"
+        ],
+        "summary": "Create Match Fact",
+        "description": "Record a goal (with optional assist) or a card for one of the team's players.",
+        "operationId": "create_match_fact_api_v1_match_facts_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MatchFactCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MatchFactResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/match-facts/{fact_id}": {
+      "delete": {
+        "tags": [
+          "Match facts"
+        ],
+        "summary": "Delete Match Fact",
+        "description": "Delete a match fact.",
+        "operationId": "delete_match_fact_api_v1_match_facts__fact_id__delete",
+        "parameters": [
+          {
+            "name": "fact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Fact Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stats/teams/{team_id}": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Get Team Stats",
+        "description": "Season record of a team and its players: goals, assists, cards, selections, attendance.",
+        "operationId": "get_team_stats_api_v1_stats_teams__team_id__get",
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Team Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamStats"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/health": {
       "get": {
         "tags": [
@@ -1529,6 +2451,130 @@
           "unavailable"
         ],
         "title": "AvailabilitySummary"
+      },
+      "ClubCreate": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "primary_color": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "title": "Primary Color",
+            "default": "#16a34a",
+            "examples": [
+              "#16a34a"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "ClubCreate"
+      },
+      "ClubResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "primary_color": {
+            "type": "string",
+            "title": "Primary Color"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "city",
+          "primary_color",
+          "created_at"
+        ],
+        "title": "ClubResponse"
+      },
+      "ClubUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 120
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "City"
+          },
+          "primary_color": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$",
+                "examples": [
+                  "#16a34a"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Primary Color"
+          }
+        },
+        "type": "object",
+        "title": "ClubUpdate"
       },
       "ErrorResponse": {
         "properties": {
@@ -1672,6 +2718,7 @@
         "enum": [
           "match",
           "training",
+          "tournament",
           "other"
         ],
         "title": "EventKind"
@@ -1771,6 +2818,28 @@
             "type": "boolean",
             "title": "Is Cancelled"
           },
+          "score_for": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score For"
+          },
+          "score_against": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Against"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -1791,6 +2860,8 @@
           "venue",
           "notes",
           "is_cancelled",
+          "score_for",
+          "score_against",
           "created_at"
         ],
         "title": "EventResponse"
@@ -1901,10 +2972,45 @@
               }
             ],
             "title": "Is Cancelled"
+          },
+          "score_for": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 99.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score For"
+          },
+          "score_against": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 99.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Against"
           }
         },
         "type": "object",
         "title": "EventUpdate"
+      },
+      "FactKind": {
+        "type": "string",
+        "enum": [
+          "goal",
+          "yellow_card",
+          "red_card"
+        ],
+        "title": "FactKind"
       },
       "FieldError": {
         "properties": {
@@ -1923,6 +3029,32 @@
           "message"
         ],
         "title": "FieldError"
+      },
+      "FormationResponse": {
+        "properties": {
+          "code": {
+            "type": "string",
+            "title": "Code"
+          },
+          "players": {
+            "type": "integer",
+            "title": "Players"
+          },
+          "lines": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Lines"
+          }
+        },
+        "type": "object",
+        "required": [
+          "code",
+          "players",
+          "lines"
+        ],
+        "title": "FormationResponse"
       },
       "InvitationCreate": {
         "properties": {
@@ -2023,6 +3155,22 @@
             ],
             "title": "Responded At"
           },
+          "reminder_count": {
+            "type": "integer",
+            "title": "Reminder Count"
+          },
+          "last_reminded_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Reminded At"
+          },
           "member": {
             "$ref": "#/components/schemas/InvitedMember"
           }
@@ -2034,6 +3182,8 @@
           "availability",
           "comment",
           "responded_at",
+          "reminder_count",
+          "last_reminded_at",
           "member"
         ],
         "title": "InvitationResponse"
@@ -2088,6 +3238,190 @@
           "shirt_number"
         ],
         "title": "InvitedMember"
+      },
+      "LineupResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          },
+          "formation": {
+            "type": "string",
+            "title": "Formation"
+          },
+          "is_published": {
+            "type": "boolean",
+            "title": "Is Published"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/SlotResponse"
+            },
+            "type": "array",
+            "title": "Slots"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "unavailable_member_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Unavailable Member Ids",
+            "description": "Selected members who did not answer 'available'",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "event_id",
+          "formation",
+          "is_published",
+          "slots",
+          "updated_at"
+        ],
+        "title": "LineupResponse"
+      },
+      "LineupWrite": {
+        "properties": {
+          "formation": {
+            "type": "string",
+            "title": "Formation",
+            "examples": [
+              "4-4-2"
+            ]
+          },
+          "is_published": {
+            "type": "boolean",
+            "title": "Is Published",
+            "default": false
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/SlotInput"
+            },
+            "type": "array",
+            "maxItems": 30,
+            "title": "Slots"
+          }
+        },
+        "type": "object",
+        "required": [
+          "formation",
+          "slots"
+        ],
+        "title": "LineupWrite"
+      },
+      "MatchFactCreate": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/FactKind"
+          },
+          "member_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Member Id"
+          },
+          "assist_member_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assist Member Id"
+          },
+          "minute": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 130.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minute"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "kind",
+          "member_id"
+        ],
+        "title": "MatchFactCreate"
+      },
+      "MatchFactResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/FactKind"
+          },
+          "minute": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minute"
+          },
+          "member": {
+            "$ref": "#/components/schemas/InvitedMember"
+          },
+          "assist_member": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InvitedMember"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "event_id",
+          "kind",
+          "minute",
+          "member",
+          "assist_member"
+        ],
+        "title": "MatchFactResponse"
       },
       "MemberCreate": {
         "properties": {
@@ -2317,6 +3651,42 @@
         "type": "object",
         "title": "MemberUpdate"
       },
+      "PaginatedResponse_ClubResponse_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ClubResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "skip": {
+            "type": "integer",
+            "title": "Skip"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "has_more": {
+            "type": "boolean",
+            "title": "Has More"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "skip",
+          "limit",
+          "has_more"
+        ],
+        "title": "PaginatedResponse[ClubResponse]"
+      },
       "PaginatedResponse_EventResponse_": {
         "properties": {
           "items": {
@@ -2388,6 +3758,42 @@
           "has_more"
         ],
         "title": "PaginatedResponse[InvitationResponse]"
+      },
+      "PaginatedResponse_MatchFactResponse_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MatchFactResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "skip": {
+            "type": "integer",
+            "title": "Skip"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "has_more": {
+            "type": "boolean",
+            "title": "Has More"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "skip",
+          "limit",
+          "has_more"
+        ],
+        "title": "PaginatedResponse[MatchFactResponse]"
       },
       "PaginatedResponse_MemberResponse_": {
         "properties": {
@@ -2471,6 +3877,165 @@
         ],
         "title": "PlayerPosition"
       },
+      "PlayerStats": {
+        "properties": {
+          "member": {
+            "$ref": "#/components/schemas/InvitedMember"
+          },
+          "selections": {
+            "type": "integer",
+            "title": "Selections"
+          },
+          "goals": {
+            "type": "integer",
+            "title": "Goals"
+          },
+          "assists": {
+            "type": "integer",
+            "title": "Assists"
+          },
+          "yellow_cards": {
+            "type": "integer",
+            "title": "Yellow Cards"
+          },
+          "red_cards": {
+            "type": "integer",
+            "title": "Red Cards"
+          },
+          "invited": {
+            "type": "integer",
+            "title": "Invited"
+          },
+          "present": {
+            "type": "integer",
+            "title": "Present"
+          },
+          "attendance_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Attendance Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "member",
+          "selections",
+          "goals",
+          "assists",
+          "yellow_cards",
+          "red_cards",
+          "invited",
+          "present",
+          "attendance_rate"
+        ],
+        "title": "PlayerStats"
+      },
+      "ReminderRequest": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id"
+        ],
+        "title": "ReminderRequest"
+      },
+      "ReminderResult": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          },
+          "reminded": {
+            "type": "integer",
+            "title": "Reminded"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "reminded"
+        ],
+        "title": "ReminderResult"
+      },
+      "SlotInput": {
+        "properties": {
+          "member_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Member Id"
+          },
+          "role": {
+            "$ref": "#/components/schemas/SlotRole"
+          },
+          "position_index": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position Index",
+            "description": "Starter position; null on the bench"
+          }
+        },
+        "type": "object",
+        "required": [
+          "member_id",
+          "role"
+        ],
+        "title": "SlotInput"
+      },
+      "SlotResponse": {
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/SlotRole"
+          },
+          "position_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position Index"
+          },
+          "member": {
+            "$ref": "#/components/schemas/InvitedMember"
+          }
+        },
+        "type": "object",
+        "required": [
+          "role",
+          "position_index",
+          "member"
+        ],
+        "title": "SlotResponse"
+      },
+      "SlotRole": {
+        "type": "string",
+        "enum": [
+          "starter",
+          "substitute"
+        ],
+        "title": "SlotRole"
+      },
       "TeamCategory": {
         "type": "string",
         "enum": [
@@ -2488,6 +4053,11 @@
       },
       "TeamCreate": {
         "properties": {
+          "club_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Club Id"
+          },
           "name": {
             "type": "string",
             "maxLength": 100,
@@ -2504,10 +4074,20 @@
             "examples": [
               "2026-2027"
             ]
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$",
+            "title": "Color",
+            "default": "#16a34a",
+            "examples": [
+              "#16a34a"
+            ]
           }
         },
         "type": "object",
         "required": [
+          "club_id",
           "name",
           "category",
           "season"
@@ -2521,6 +4101,11 @@
             "format": "uuid",
             "title": "Id"
           },
+          "club_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Club Id"
+          },
           "name": {
             "type": "string",
             "title": "Name"
@@ -2532,6 +4117,10 @@
             "type": "string",
             "title": "Season"
           },
+          "color": {
+            "type": "string",
+            "title": "Color"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -2541,12 +4130,66 @@
         "type": "object",
         "required": [
           "id",
+          "club_id",
           "name",
           "category",
           "season",
+          "color",
           "created_at"
         ],
         "title": "TeamResponse"
+      },
+      "TeamStats": {
+        "properties": {
+          "team_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Id"
+          },
+          "played": {
+            "type": "integer",
+            "title": "Played"
+          },
+          "wins": {
+            "type": "integer",
+            "title": "Wins"
+          },
+          "draws": {
+            "type": "integer",
+            "title": "Draws"
+          },
+          "losses": {
+            "type": "integer",
+            "title": "Losses"
+          },
+          "goals_for": {
+            "type": "integer",
+            "title": "Goals For"
+          },
+          "goals_against": {
+            "type": "integer",
+            "title": "Goals Against"
+          },
+          "players": {
+            "items": {
+              "$ref": "#/components/schemas/PlayerStats"
+            },
+            "type": "array",
+            "title": "Players"
+          }
+        },
+        "type": "object",
+        "required": [
+          "team_id",
+          "played",
+          "wins",
+          "draws",
+          "losses",
+          "goals_for",
+          "goals_against",
+          "players"
+        ],
+        "title": "TeamStats"
       },
       "TeamUpdate": {
         "properties": {
@@ -2587,6 +4230,21 @@
               }
             ],
             "title": "Season"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$",
+                "examples": [
+                  "#16a34a"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
           }
         },
         "type": "object",

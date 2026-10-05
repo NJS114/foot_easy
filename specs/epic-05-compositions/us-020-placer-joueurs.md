@@ -1,6 +1,6 @@
 # US 020 — Placer les joueurs disponibles sur le terrain
 
-status: To Do
+status: Done
 estimate: L
 parent: epic-05
 
@@ -26,3 +26,7 @@ En tant que coach, je veux glisser-déposer les joueurs disponibles sur le terra
 - service
 - router
 - front
+
+## Notes
+
+- Placement au clic (accessible clavier) plutôt qu'au glisser-déposer ; l'API signale les joueurs sélectionnés sans réponse « Présent ».

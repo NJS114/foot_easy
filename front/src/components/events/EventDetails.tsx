@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import type { Event } from "@/api/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useCancelEvent } from "@/hooks/useEvents";
+import { useUpdateEvent } from "@/hooks/useEvents";
 import { formatDateTime } from "@/lib/dates";
 
 export function EventDetails({ event }: { event: Event }) {
   const { t, i18n } = useTranslation();
-  const cancelEvent = useCancelEvent();
+  const updateEvent = useUpdateEvent(event.id);
   return (
     <section className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center gap-2">
@@ -44,8 +44,8 @@ export function EventDetails({ event }: { event: Event }) {
         <Button
           variant="outline"
           className="self-start"
-          disabled={cancelEvent.isPending}
-          onClick={() => cancelEvent.mutate(event.id)}
+          disabled={updateEvent.isPending}
+          onClick={() => updateEvent.mutate({ is_cancelled: true })}
         >
           {t("events.cancel")}
         </Button>

@@ -20,6 +20,11 @@ function InvitationRow({ invitation, disabled, onReply }: InvitationRowProps) {
   return (
     <li className="flex flex-wrap items-center gap-3 px-3 py-2">
       <span className="flex-1 font-medium">{fullName}</span>
+      {invitation.availability === "pending" && invitation.reminder_count > 0 && (
+        <span className="text-xs text-muted-foreground">
+          {t("invitations.reminderCount", { count: invitation.reminder_count })}
+        </span>
+      )}
       <AvailabilityBadge availability={invitation.availability} />
       <div
         role="group"

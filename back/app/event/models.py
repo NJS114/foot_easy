@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, ForeignKey, Index, String, Text
+from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Index, SmallInteger, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base, IdMixin, TimestampMixin, UtcDateTime, str_enum
@@ -11,7 +11,11 @@ from app.core.database import Base, IdMixin, TimestampMixin, UtcDateTime, str_en
 class EventKind(enum.StrEnum):
     MATCH = "match"
     TRAINING = "training"
+    TOURNAMENT = "tournament"
     OTHER = "other"
+
+
+COMPETITIVE_KINDS = frozenset({EventKind.MATCH, EventKind.TOURNAMENT})
 
 
 class Venue(enum.StrEnum):
@@ -21,7 +25,10 @@ class Venue(enum.StrEnum):
 
 class Event(IdMixin, TimestampMixin, Base):
     __tablename__ = "events"
-    __table_args__ = (Index("ix_events_team_id_starts_at", "team_id", "starts_at"),)
+    __table_args__ = (
+        Index("ix_events_team_id_starts_at", "team_id", "starts_at"),
+        CheckConstraint("score_for >= 0 AND score_against >= 0", name="ck_events_scores_positive"),
+    )
 
     team_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("teams.id", ondelete="CASCADE"))
     kind: Mapped[EventKind] = mapped_column(str_enum(EventKind))
@@ -34,3 +41,5 @@ class Event(IdMixin, TimestampMixin, Base):
     venue: Mapped[Venue | None] = mapped_column(str_enum(Venue))
     notes: Mapped[str | None] = mapped_column(Text)
     is_cancelled: Mapped[bool] = mapped_column(Boolean, default=False)
+    score_for: Mapped[int | None] = mapped_column(SmallInteger)
+    score_against: Mapped[int | None] = mapped_column(SmallInteger)

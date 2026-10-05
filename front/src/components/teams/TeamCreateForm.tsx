@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/native-select";
+import { useCurrentClub } from "@/hooks/useClubs";
 import { useCreateTeam } from "@/hooks/useTeams";
 import { fieldErrorFor } from "@/lib/formErrors";
 
@@ -23,6 +24,7 @@ const TEAM_CATEGORIES: TeamCreate["category"][] = [
 
 export function TeamCreateForm() {
   const { t } = useTranslation();
+  const club = useCurrentClub();
   const createTeam = useCreateTeam();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -31,9 +33,11 @@ export function TeamCreateForm() {
     const data = new FormData(form);
     createTeam.mutate(
       {
+        club_id: club.id,
         name: String(data.get("name")),
         category: data.get("category") as TeamCreate["category"],
         season: String(data.get("season")),
+        color: String(data.get("color")),
       },
       { onSuccess: () => form.reset() },
     );
@@ -66,6 +70,11 @@ export function TeamCreateForm() {
             error={fieldErrorFor(createTeam.error, "season")}
           >
             {(props) => <Input {...props} name="season" required placeholder="2026-2027" />}
+          </FormField>
+          <FormField label={t("teams.color")} error={fieldErrorFor(createTeam.error, "color")}>
+            {(props) => (
+              <Input {...props} name="color" type="color" defaultValue={club.primary_color} />
+            )}
           </FormField>
           <FormError error={createTeam.error} />
           <Button type="submit" disabled={createTeam.isPending}>

@@ -2,8 +2,8 @@ import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 import { describe, expect, it } from "vitest";
-import type { Invitation } from "@/api/client";
-import { apiUrl, INVITATION, MATCH, page, server } from "@/test/server";
+import type { Event, Invitation, LineupWrite, MatchFactCreate } from "@/api/client";
+import { apiUrl, FORMATIONS, INVITATION, MATCH, page, PLAYER, server } from "@/test/server";
 import { renderRoute } from "@/test/renderRoute";
 
 const SUMMARY = {
@@ -15,18 +15,24 @@ const SUMMARY = {
   unavailable: 0,
 };
 
-function mockEvent(invitations: Invitation[]) {
+function mockEvent(invitations: Invitation[], event: Event = MATCH) {
   server.use(
-    http.get(apiUrl(`/events/${MATCH.id}`), () => HttpResponse.json(MATCH)),
+    http.get(apiUrl(`/events/${MATCH.id}`), () => HttpResponse.json(event)),
     http.get(apiUrl("/invitations"), () => HttpResponse.json(page(invitations))),
     http.get(apiUrl("/invitations/summary"), () =>
       HttpResponse.json({ ...SUMMARY, invited: invitations.length }),
     ),
+    http.get(apiUrl("/members"), () => HttpResponse.json(page([PLAYER]))),
+    http.get(apiUrl("/lineups/formations"), () => HttpResponse.json(FORMATIONS)),
+    http.get(apiUrl(`/lineups/${MATCH.id}`), () =>
+      HttpResponse.json({ code: "lineup_not_found", message: "none", errors: [] }, { status: 404 }),
+    ),
+    http.get(apiUrl("/match-facts"), () => HttpResponse.json(page([]))),
   );
 }
 
 describe("EventPage", () => {
-  it("shows the match details", async () => {
+  it("shows the match details and empty invitations", async () => {
     mockEvent([]);
 
     renderRoute(`/events/${MATCH.id}`);
@@ -54,6 +60,22 @@ describe("EventPage", () => {
     expect(screen.getByText("Sans réponse")).toBeInTheDocument();
   });
 
+  it("reminds members who have not answered", async () => {
+    mockEvent([INVITATION]);
+    server.use(
+      http.post(apiUrl("/invitations/reminders"), () =>
+        HttpResponse.json({ event_id: MATCH.id, reminded: 1 }),
+      ),
+    );
+    renderRoute(`/events/${MATCH.id}`);
+
+    await userEvent.click(
+      await screen.findByRole("button", { name: "Relancer les non-répondants" }),
+    );
+
+    expect(await screen.findByText("1 membre(s) relancé(s)")).toBeInTheDocument();
+  });
+
   it("records a player's availability", async () => {
     let invitation = INVITATION;
     mockEvent([invitation]);
@@ -73,5 +95,69 @@ describe("EventPage", () => {
     expect(await within(group).findByRole("button", { pressed: true })).toHaveTextContent(
       "Présent",
     );
+  });
+
+  it("places a player on the pitch and saves the lineup", async () => {
+    let sent: LineupWrite | undefined;
+    mockEvent([]);
+    server.use(
+      http.put(apiUrl(`/lineups/${MATCH.id}`), async ({ request }) => {
+        sent = (await request.json()) as LineupWrite;
+        return HttpResponse.json({
+          id: "lineup-1",
+          event_id: MATCH.id,
+          formation: sent.formation,
+          is_published: sent.is_published,
+          slots: [],
+          updated_at: "2026-10-05T10:00:00Z",
+          unavailable_member_ids: [PLAYER.id],
+        });
+      }),
+    );
+    renderRoute(`/events/${MATCH.id}`);
+    await userEvent.click(await screen.findByRole("tab", { name: "Composition" }));
+
+    await userEvent.click(await screen.findByRole("button", { name: /Zinedine Zidane/ }));
+    await userEvent.click(screen.getByRole("button", { name: "Poste 1 libre" }));
+    await userEvent.click(screen.getByRole("button", { name: "Enregistrer" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("Composition enregistrée");
+    expect(sent?.slots).toEqual([{ member_id: PLAYER.id, role: "starter", position_index: 0 }]);
+  });
+
+  it("records a goal in the match tab", async () => {
+    let sent: MatchFactCreate | undefined;
+    mockEvent([]);
+    server.use(
+      http.post(apiUrl("/match-facts"), async ({ request }) => {
+        sent = (await request.json()) as MatchFactCreate;
+        return HttpResponse.json({ id: "fact-1" }, { status: 201 });
+      }),
+    );
+    renderRoute(`/events/${MATCH.id}`);
+    await userEvent.click(await screen.findByRole("tab", { name: "Match" }));
+
+    const form = await screen.findByRole("form", { name: "Faits de match" });
+    await userEvent.type(within(form).getByLabelText("Minute"), "17");
+    await userEvent.click(within(form).getByRole("button", { name: "Ajouter" }));
+
+    await expect
+      .poll(() => sent)
+      .toEqual({
+        event_id: MATCH.id,
+        kind: "goal",
+        member_id: PLAYER.id,
+        assist_member_id: null,
+        minute: 17,
+      });
+  });
+
+  it("hides lineup and match tabs for a training", async () => {
+    mockEvent([], { ...MATCH, kind: "training", opponent: null, venue: null });
+
+    renderRoute(`/events/${MATCH.id}`);
+
+    expect(await screen.findByRole("tab", { name: "Convocations" })).toBeInTheDocument();
+    expect(screen.queryByRole("tab", { name: "Composition" })).not.toBeInTheDocument();
   });
 });

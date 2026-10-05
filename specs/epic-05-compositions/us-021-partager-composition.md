@@ -1,6 +1,6 @@
 # US 021 — Partager la composition
 
-status: To Do
+status: In Progress
 estimate: S
 parent: epic-05
 
@@ -23,3 +23,8 @@ En tant que coach, je veux publier la composition à l'équipe ou publiquement a
 - service
 - router
 - front
+
+## Notes
+
+- Livré : indicateur « publiée à l'équipe » enregistré avec la composition.
+- Reste : visibilité réelle par rôle (dépend de us-015) et lien public.

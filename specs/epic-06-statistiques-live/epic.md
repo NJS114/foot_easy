@@ -1,6 +1,6 @@
 # Epic 06 — Statistiques & live match
 
-status: To Do
+status: In Progress
 
 ## Problem
 

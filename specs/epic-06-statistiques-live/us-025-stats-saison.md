@@ -1,6 +1,6 @@
 # US 025 — Statistiques individuelles et d'équipe de la saison
 
-status: To Do
+status: Done
 estimate: M
 parent: epic-06
 
