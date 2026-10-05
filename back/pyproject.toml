@@ -1,0 +1,55 @@
+[project]
+name = "foot-easy-back"
+version = "0.1.0"
+description = "Foot Easy API — football team management"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy[asyncio]>=2.0.30",
+    "asyncpg>=0.29",
+    "alembic>=1.13",
+    "pydantic[email]>=2.7",
+    "pydantic-settings>=2.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27",
+    "aiosqlite>=0.20",
+    "ruff>=0.6",
+    "bandit>=1.7",
+    "pre-commit>=3.7",
+    "detect-secrets>=1.5",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+extend-select = ["N", "PLR0915"]
+
+[tool.ruff.lint.pylint]
+max-statements = 50
+
+[tool.bandit]
+exclude_dirs = ["tests", "alembic"]
+
+[tool.ruff.lint.isort]
+known-third-party = ["alembic"]
