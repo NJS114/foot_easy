@@ -11,6 +11,7 @@ def test_summarize_results_counts_outcomes_and_goals():
         "losses": 1,
         "goals_for": 5,
         "goals_against": 4,
+        "form": ["W", "D", "L"],
     }
 
 

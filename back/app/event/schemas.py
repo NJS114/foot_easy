@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from typing import Annotated
 
 from pydantic import AwareDatetime, BaseModel, Field, StringConstraints
@@ -23,6 +23,13 @@ class EventCreate(BaseModel):
     opponent: ShortText | None = None
     venue: Venue | None = None
     notes: str | None = None
+
+
+class EventSeriesCreate(EventCreate):
+    """The first occurrence, repeated every `interval_weeks` until `repeat_until` (inclusive)."""
+
+    repeat_until: date
+    interval_weeks: Annotated[int, Field(ge=1, le=4)] = 1
 
 
 class EventUpdate(BaseModel):
@@ -54,6 +61,7 @@ class EventResponse(OrmModel):
     is_cancelled: bool
     score_for: int | None
     score_against: int | None
+    series_id: uuid.UUID | None
     created_at: datetime
 
 

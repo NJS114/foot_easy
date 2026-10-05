@@ -17,7 +17,9 @@ def _envelope(request: Request, status_code: int, body: ErrorResponse) -> JSONRe
 
 
 async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
-    return _envelope(request, exc.status_code, ErrorResponse(code=exc.code, message=exc.message))
+    errors = [FieldError(field=field, message=message) for field, message in exc.errors]
+    body = ErrorResponse(code=exc.code, message=exc.message, errors=errors)
+    return _envelope(request, exc.status_code, body)
 
 
 async def validation_error_handler(request: Request, exc: RequestValidationError) -> JSONResponse:

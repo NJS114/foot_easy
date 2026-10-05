@@ -6,6 +6,7 @@ import { InvitationsPanel } from "@/components/invitations/InvitationsPanel";
 import { LineupEditor } from "@/components/lineup/LineupEditor";
 import { MatchPanel } from "@/components/match/MatchPanel";
 import { ErrorState, LoadingState } from "@/components/StateViews";
+import { TaskAssigner } from "@/components/tasks/TaskManager";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useEvent } from "@/hooks/useEvents";
 
@@ -35,6 +36,7 @@ export function EventPage() {
             <TabsTrigger value="lineup">{t("events.tabs.lineup")}</TabsTrigger>
           )}
           {isCompetitive && <TabsTrigger value="match">{t("events.tabs.match")}</TabsTrigger>}
+          <TabsTrigger value="tasks">{t("events.tabs.tasks")}</TabsTrigger>
         </TabsList>
         <TabsContent value="invitations">
           <InvitationsPanel event={event} />
@@ -49,6 +51,9 @@ export function EventPage() {
             <MatchPanel event={event} />
           </TabsContent>
         )}
+        <TabsContent value="tasks">
+          <TaskAssigner eventId={event.id} teamId={event.team_id} />
+        </TabsContent>
       </Tabs>
     </div>
   );

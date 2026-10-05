@@ -11,6 +11,8 @@ dependencies = [
     "alembic>=1.13",
     "pydantic[email]>=2.7",
     "pydantic-settings>=2.3",
+    "python-multipart>=0.0.9",
+    "openpyxl>=3.1",
 ]
 
 [project.optional-dependencies]

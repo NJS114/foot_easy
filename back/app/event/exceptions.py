@@ -23,6 +23,11 @@ class ScoreNotAllowedError(BusinessRuleError):
         super().__init__("score_not_allowed", "Only a match or a tournament can have a score")
 
 
+class InvalidSeriesError(BusinessRuleError):
+    def __init__(self, message: str):
+        super().__init__("invalid_series", message)
+
+
 class EventCancelledError(BusinessRuleError):
     def __init__(self, event_id: object):
         super().__init__("event_cancelled", f"Event {event_id} is cancelled")

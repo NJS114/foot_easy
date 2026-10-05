@@ -117,15 +117,55 @@ export interface paths {
         };
         /**
          * List Members
-         * @description List a team's roster, optionally filtered by role.
+         * @description List a team roster or the club directory, with role filter, search and sort.
          */
         get: operations["list_members_api_v1_members_get"];
         put?: never;
         /**
          * Create Member
-         * @description Add a member to a team; shirt numbers are unique within a team.
+         * @description Add a member to a team or group; shirt numbers are unique within a team.
          */
         post: operations["create_member_api_v1_members_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/members/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export Members
+         * @description Export the filtered members as a CSV file readable by Excel.
+         */
+        get: operations["export_members_api_v1_members_export_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/members/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import Members
+         * @description Import a roster file into a team; nothing is created if any row is invalid.
+         */
+        post: operations["import_members_api_v1_members_import_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -210,6 +250,26 @@ export interface paths {
          * @description Partially update an event, including cancelling it or recording the score.
          */
         patch: operations["partial_update_event_api_v1_events__event_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/events/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Event Series
+         * @description Create a recurring event (e.g. training every Tuesday) up to a given date.
+         */
+        post: operations["create_event_series_api_v1_events_series_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/invitations": {
@@ -298,6 +358,26 @@ export interface paths {
          * @description Record a member's availability for the event.
          */
         patch: operations["partial_update_invitation_api_v1_invitations__invitation_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/invitations/{invitation_id}/attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Update Attendance
+         * @description Record the actual attendance (on time, late, excused, unexcused, injured).
+         */
+        patch: operations["update_attendance_api_v1_invitations__invitation_id__attendance_patch"];
         trace?: never;
     };
     "/api/v1/lineups/formations": {
@@ -399,14 +479,153 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get Team Stats
-         * @description Season record of a team and its players: goals, assists, cards, selections, attendance.
-         */
+        /** Get Team Stats */
         get: operations["get_team_stats_api_v1_stats_teams__team_id__get"];
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stats/teams/{team_id}/attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Attendance Report */
+        get: operations["get_attendance_report_api_v1_stats_teams__team_id__attendance_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stats/teams/{team_id}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Task Report */
+        get: operations["get_task_report_api_v1_stats_teams__team_id__tasks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Tasks
+         * @description List the team's task catalog.
+         */
+        get: operations["list_tasks_api_v1_tasks_get"];
+        put?: never;
+        /**
+         * Create Task
+         * @description Add a custom task to the team's catalog.
+         */
+        post: operations["create_task_api_v1_tasks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tasks/defaults": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add Default Tasks
+         * @description Add the usual football chores missing from the catalog (idempotent).
+         */
+        post: operations["add_default_tasks_api_v1_tasks_defaults_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tasks/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Assignments
+         * @description List who does what for an event.
+         */
+        get: operations["list_assignments_api_v1_tasks_assignments_get"];
+        put?: never;
+        /**
+         * Create Assignment
+         * @description Assign a task to a team member for an event.
+         */
+        post: operations["create_assignment_api_v1_tasks_assignments_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tasks/assignments/{assignment_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Assignment
+         * @description Remove an assignment.
+         */
+        delete: operations["delete_assignment_api_v1_tasks_assignments__assignment_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tasks/{task_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete Task
+         * @description Remove a task from the catalog with its assignments.
+         */
+        delete: operations["delete_task_api_v1_tasks__task_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -436,6 +655,74 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AssignmentCreate */
+        AssignmentCreate: {
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /**
+             * Team Task Id
+             * Format: uuid
+             */
+            team_task_id: string;
+            /**
+             * Member Id
+             * Format: uuid
+             */
+            member_id: string;
+        };
+        /** AssignmentResponse */
+        AssignmentResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            task: components["schemas"]["TeamTaskResponse"];
+            member: components["schemas"]["InvitedMember"];
+        };
+        /** AttendanceReport */
+        AttendanceReport: {
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            /** Events */
+            events: components["schemas"]["EventColumn"][];
+            /** Rows */
+            rows: components["schemas"]["AttendanceRow"][];
+        };
+        /** AttendanceRow */
+        AttendanceRow: {
+            member: components["schemas"]["InvitedMember"];
+            /**
+             * Cells
+             * @description One per event column: attendance if recorded, else the availability answer, else 'not_invited'
+             */
+            cells: string[];
+            /** Present */
+            present: number;
+            /** Invited */
+            invited: number;
+        };
+        /**
+         * AttendanceStatus
+         * @description What actually happened on the day, recorded by the coach.
+         * @enum {string}
+         */
+        AttendanceStatus: "on_time" | "late" | "excused" | "unexcused" | "injured";
+        /** AttendanceUpdate */
+        AttendanceUpdate: {
+            attendance: components["schemas"]["AttendanceStatus"] | null;
+        };
         /**
          * Availability
          * @enum {string}
@@ -458,6 +745,14 @@ export interface components {
             uncertain: number;
             /** Unavailable */
             unavailable: number;
+        };
+        /** Body_import_members_api_v1_members_import_post */
+        Body_import_members_api_v1_members_import_post: {
+            /**
+             * File
+             * @description CSV (; or ,) or XLSX roster
+             */
+            file: string;
         };
         /** ClubCreate */
         ClubCreate: {
@@ -500,6 +795,19 @@ export interface components {
             /** Primary Color */
             primary_color?: string | null;
         };
+        /** DefaultTasksRequest */
+        DefaultTasksRequest: {
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+        };
+        /** DefaultTasksResult */
+        DefaultTasksResult: {
+            /** Added */
+            added: number;
+        };
         /** ErrorResponse */
         ErrorResponse: {
             /** Code */
@@ -513,6 +821,22 @@ export interface components {
             errors: components["schemas"]["FieldError"][];
             /** Request Id */
             request_id?: string | null;
+        };
+        /** EventColumn */
+        EventColumn: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Title */
+            title: string;
+            kind: components["schemas"]["EventKind"];
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
         };
         /** EventCreate */
         EventCreate: {
@@ -583,11 +907,53 @@ export interface components {
             score_for: number | null;
             /** Score Against */
             score_against: number | null;
+            /** Series Id */
+            series_id: string | null;
             /**
              * Created At
              * Format: date-time
              */
             created_at: string;
+        };
+        /**
+         * EventSeriesCreate
+         * @description The first occurrence, repeated every `interval_weeks` until `repeat_until` (inclusive).
+         */
+        EventSeriesCreate: {
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            kind: components["schemas"]["EventKind"];
+            /** Title */
+            title: string;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /** Ends At */
+            ends_at?: string | null;
+            /** Meeting At */
+            meeting_at?: string | null;
+            /** Location */
+            location?: string | null;
+            /** Opponent */
+            opponent?: string | null;
+            venue?: components["schemas"]["Venue"] | null;
+            /** Notes */
+            notes?: string | null;
+            /**
+             * Repeat Until
+             * Format: date
+             */
+            repeat_until: string;
+            /**
+             * Interval Weeks
+             * @default 1
+             */
+            interval_weeks: number;
         };
         /** EventUpdate */
         EventUpdate: {
@@ -634,6 +1000,13 @@ export interface components {
             /** Lines */
             lines: number[];
         };
+        /** ImportReport */
+        ImportReport: {
+            /** Imported */
+            imported: number;
+            /** Skipped */
+            skipped: number;
+        };
         /** InvitationCreate */
         InvitationCreate: {
             /**
@@ -678,6 +1051,7 @@ export interface components {
             reminder_count: number;
             /** Last Reminded At */
             last_reminded_at: string | null;
+            attendance: components["schemas"]["AttendanceStatus"] | null;
             member: components["schemas"]["InvitedMember"];
         };
         /** InvitedMember */
@@ -696,6 +1070,11 @@ export interface components {
             /** Shirt Number */
             shirt_number: number | null;
         };
+        /**
+         * JerseySize
+         * @enum {string}
+         */
+        JerseySize: "6y" | "8y" | "10y" | "12y" | "14y" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
         /** LineupResponse */
         LineupResponse: {
             /**
@@ -779,6 +1158,18 @@ export interface components {
         };
         /** MemberCreate */
         MemberCreate: {
+            /** Email */
+            email?: string | null;
+            /** Phone */
+            phone?: string | null;
+            /** Birth Date */
+            birth_date?: string | null;
+            /** License Number */
+            license_number?: string | null;
+            jersey_size?: components["schemas"]["JerseySize"] | null;
+            position?: components["schemas"]["PlayerPosition"] | null;
+            /** Shirt Number */
+            shirt_number?: number | null;
             /**
              * Team Id
              * Format: uuid
@@ -788,13 +1179,23 @@ export interface components {
             first_name: string;
             /** Last Name */
             last_name: string;
-            /** Email */
-            email?: string | null;
             /** @default player */
             role: components["schemas"]["MemberRole"];
-            position?: components["schemas"]["PlayerPosition"] | null;
-            /** Shirt Number */
-            shirt_number?: number | null;
+        };
+        /**
+         * MemberQuery
+         * @description Directory filters: a team roster or the whole club.
+         */
+        MemberQuery: {
+            /** Team Id */
+            team_id?: string | null;
+            /** Club Id */
+            club_id?: string | null;
+            role?: components["schemas"]["MemberRole"] | null;
+            /** Search */
+            search?: string | null;
+            /** @default role */
+            sort: components["schemas"]["MemberSort"];
         };
         /** MemberResponse */
         MemberResponse: {
@@ -814,6 +1215,13 @@ export interface components {
             last_name: string;
             /** Email */
             email: string | null;
+            /** Phone */
+            phone: string | null;
+            /** Birth Date */
+            birth_date: string | null;
+            /** License Number */
+            license_number: string | null;
+            jersey_size: components["schemas"]["JerseySize"] | null;
             role: components["schemas"]["MemberRole"];
             position: components["schemas"]["PlayerPosition"] | null;
             /** Shirt Number */
@@ -828,19 +1236,31 @@ export interface components {
          * MemberRole
          * @enum {string}
          */
-        MemberRole: "player" | "coach" | "staff";
+        MemberRole: "player" | "coach" | "staff" | "president" | "secretary" | "treasurer" | "technical_director" | "volunteer" | "referee";
+        /**
+         * MemberSort
+         * @enum {string}
+         */
+        MemberSort: "last_name" | "first_name" | "role" | "shirt_number";
         /** MemberUpdate */
         MemberUpdate: {
+            /** Email */
+            email?: string | null;
+            /** Phone */
+            phone?: string | null;
+            /** Birth Date */
+            birth_date?: string | null;
+            /** License Number */
+            license_number?: string | null;
+            jersey_size?: components["schemas"]["JerseySize"] | null;
+            position?: components["schemas"]["PlayerPosition"] | null;
+            /** Shirt Number */
+            shirt_number?: number | null;
             /** First Name */
             first_name?: string | null;
             /** Last Name */
             last_name?: string | null;
-            /** Email */
-            email?: string | null;
             role?: components["schemas"]["MemberRole"] | null;
-            position?: components["schemas"]["PlayerPosition"] | null;
-            /** Shirt Number */
-            shirt_number?: number | null;
         };
         /** PaginatedResponse[ClubResponse] */
         PaginatedResponse_ClubResponse_: {
@@ -920,6 +1340,19 @@ export interface components {
             /** Has More */
             has_more: boolean;
         };
+        /** PaginatedResponse[TeamTaskResponse] */
+        PaginatedResponse_TeamTaskResponse_: {
+            /** Items */
+            items: components["schemas"]["TeamTaskResponse"][];
+            /** Total */
+            total: number;
+            /** Skip */
+            skip: number;
+            /** Limit */
+            limit: number;
+            /** Has More */
+            has_more: boolean;
+        };
         /**
          * PlayerPosition
          * @enum {string}
@@ -942,6 +1375,8 @@ export interface components {
             invited: number;
             /** Present */
             present: number;
+            /** Absences */
+            absences: number;
             /** Attendance Rate */
             attendance_rate: number | null;
         };
@@ -989,11 +1424,50 @@ export interface components {
          * @enum {string}
          */
         SlotRole: "starter" | "substitute";
+        /** TaskColumn */
+        TaskColumn: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            icon: components["schemas"]["TaskIcon"];
+        };
+        /**
+         * TaskIcon
+         * @enum {string}
+         */
+        TaskIcon: "laundry" | "ball" | "water" | "car" | "flag" | "key" | "shirt" | "food" | "medkit" | "other";
+        /** TaskReport */
+        TaskReport: {
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            /** Tasks */
+            tasks: components["schemas"]["TaskColumn"][];
+            /** Rows */
+            rows: components["schemas"]["TaskRow"][];
+        };
+        /** TaskRow */
+        TaskRow: {
+            member: components["schemas"]["InvitedMember"];
+            /**
+             * Counts
+             * @description One per task column
+             */
+            counts: number[];
+            /** Total */
+            total: number;
+        };
         /**
          * TeamCategory
          * @enum {string}
          */
-        TeamCategory: "u7" | "u9" | "u11" | "u13" | "u15" | "u17" | "u19" | "senior" | "veteran";
+        TeamCategory: "u7" | "u9" | "u11" | "u13" | "u15" | "u17" | "u19" | "senior" | "veteran" | "office";
         /** TeamCreate */
         TeamCreate: {
             /**
@@ -1060,8 +1534,41 @@ export interface components {
             goals_for: number;
             /** Goals Against */
             goals_against: number;
+            /**
+             * Form
+             * @description Last results, oldest first
+             */
+            form: ("W" | "D" | "L")[];
             /** Players */
             players: components["schemas"]["PlayerStats"][];
+        };
+        /** TeamTaskCreate */
+        TeamTaskCreate: {
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            /** Name */
+            name: string;
+            /** @default other */
+            icon: components["schemas"]["TaskIcon"];
+        };
+        /** TeamTaskResponse */
+        TeamTaskResponse: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            /** Name */
+            name: string;
+            icon: components["schemas"]["TaskIcon"];
         };
         /** TeamUpdate */
         TeamUpdate: {
@@ -1592,8 +2099,7 @@ export interface operations {
     list_members_api_v1_members_get: {
         parameters: {
             query: {
-                team_id: string;
-                role?: components["schemas"]["MemberRole"] | null;
+                query: components["schemas"]["MemberQuery"];
                 skip?: number;
                 limit?: number;
             };
@@ -1661,6 +2167,112 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MemberResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    export_members_api_v1_members_export_get: {
+        parameters: {
+            query?: {
+                team_id?: string | null;
+                club_id?: string | null;
+                role?: components["schemas"]["MemberRole"] | null;
+                search?: string | null;
+                sort?: components["schemas"]["MemberSort"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": unknown;
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    import_members_api_v1_members_import_post: {
+        parameters: {
+            query: {
+                team_id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_import_members_api_v1_members_import_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportReport"];
                 };
             };
             /** @description Resource not found */
@@ -2095,6 +2707,57 @@ export interface operations {
             };
         };
     };
+    create_event_series_api_v1_events_series_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EventSeriesCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EventResponse"][];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
     list_invitations_api_v1_invitations_get: {
         parameters: {
             query: {
@@ -2357,6 +3020,59 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["InvitationReply"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvitationResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    update_attendance_api_v1_invitations__invitation_id__attendance_patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invitation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AttendanceUpdate"];
             };
         };
         responses: {
@@ -2762,6 +3478,453 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TeamStats"];
                 };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_attendance_report_api_v1_stats_teams__team_id__attendance_get: {
+        parameters: {
+            query?: {
+                until?: string | null;
+            };
+            header?: never;
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceReport"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    get_task_report_api_v1_stats_teams__team_id__tasks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskReport"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_tasks_api_v1_tasks_get: {
+        parameters: {
+            query: {
+                team_id: string;
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResponse_TeamTaskResponse_"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_task_api_v1_tasks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TeamTaskCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamTaskResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    add_default_tasks_api_v1_tasks_defaults_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DefaultTasksRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DefaultTasksResult"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    list_assignments_api_v1_tasks_assignments_get: {
+        parameters: {
+            query: {
+                event_id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentResponse"][];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    create_assignment_api_v1_tasks_assignments_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignmentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentResponse"];
+                };
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_assignment_api_v1_tasks_assignments__assignment_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                assignment_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Resource not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Validation or business rule error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    delete_task_api_v1_tasks__task_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Resource not found */
             404: {

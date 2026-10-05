@@ -11,6 +11,7 @@ from app.lineup.router import router as lineup_router
 from app.match_fact.router import router as match_fact_router
 from app.member.router import router as member_router
 from app.stats.router import router as stats_router
+from app.task.router import router as task_router
 from app.team.router import router as team_router
 
 API_PREFIX = "/api/v1"
@@ -23,6 +24,7 @@ ROUTERS = (
     lineup_router,
     match_fact_router,
     stats_router,
+    task_router,
 )
 
 

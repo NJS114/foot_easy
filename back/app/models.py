@@ -7,6 +7,7 @@ from app.invitation.models import Invitation
 from app.lineup.models import Lineup, LineupSlot
 from app.match_fact.models import MatchFact
 from app.member.models import Member
+from app.task.models import TaskAssignment, TeamTask
 from app.team.models import Team
 
 __all__ = [
@@ -18,5 +19,7 @@ __all__ = [
     "LineupSlot",
     "MatchFact",
     "Member",
+    "TaskAssignment",
     "Team",
+    "TeamTask",
 ]

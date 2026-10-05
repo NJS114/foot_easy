@@ -17,6 +17,7 @@ class TeamCategory(enum.StrEnum):
     U19 = "u19"
     SENIOR = "senior"
     VETERAN = "veteran"
+    OFFICE = "office"
 
 
 class Team(IdMixin, TimestampMixin, Base):

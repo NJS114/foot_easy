@@ -8,7 +8,13 @@ from app.core.dependencies import PaginationDep, SessionDep
 from app.core.schemas import ERROR_RESPONSES
 from app.event.models import EventKind
 from app.event.repository import EventRepository
-from app.event.schemas import EventCreate, EventListResponse, EventResponse, EventUpdate
+from app.event.schemas import (
+    EventCreate,
+    EventListResponse,
+    EventResponse,
+    EventSeriesCreate,
+    EventUpdate,
+)
 from app.event.service import EventService
 from app.team.router import get_team_service
 
@@ -48,6 +54,14 @@ async def get_event(event_id: uuid.UUID, service: EventServiceDep) -> EventRespo
 async def create_event(data: EventCreate, service: EventServiceDep) -> EventResponse:
     """Schedule a match, a training session, a tournament or another team event."""
     return await service.create_event(data)
+
+
+@router.post("/series", response_model=list[EventResponse], status_code=status.HTTP_201_CREATED)
+async def create_event_series(
+    data: EventSeriesCreate, service: EventServiceDep
+) -> list[EventResponse]:
+    """Create a recurring event (e.g. training every Tuesday) up to a given date."""
+    return await service.create_series(data)
 
 
 @router.patch("/{event_id}", response_model=EventResponse)

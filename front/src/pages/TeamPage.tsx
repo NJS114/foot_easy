@@ -5,6 +5,8 @@ import { EventList } from "@/components/events/EventList";
 import { MemberCreateForm } from "@/components/members/MemberCreateForm";
 import { MemberList } from "@/components/members/MemberList";
 import { ErrorState, LoadingState } from "@/components/StateViews";
+import { AttendanceGrid } from "@/components/stats/AttendanceGrid";
+import { TaskBilan } from "@/components/stats/TaskBilan";
 import { TeamStatsView } from "@/components/stats/TeamStatsView";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +33,8 @@ export function TeamPage() {
         <TabsList>
           <TabsTrigger value="events">{t("teams.tabs.events")}</TabsTrigger>
           <TabsTrigger value="roster">{t("teams.tabs.roster")}</TabsTrigger>
+          <TabsTrigger value="attendance">{t("teams.tabs.attendance")}</TabsTrigger>
+          <TabsTrigger value="tasks">{t("teams.tabs.tasks")}</TabsTrigger>
           <TabsTrigger value="stats">{t("teams.tabs.stats")}</TabsTrigger>
         </TabsList>
         <TabsContent value="events" className="grid gap-6 xl:grid-cols-[1fr_24rem]">
@@ -54,6 +58,12 @@ export function TeamPage() {
               <MemberCreateForm teamId={team.id} />
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="attendance">
+          <AttendanceGrid teamId={team.id} />
+        </TabsContent>
+        <TabsContent value="tasks">
+          <TaskBilan teamId={team.id} />
         </TabsContent>
         <TabsContent value="stats">
           <TeamStatsView teamId={team.id} />

@@ -25,3 +25,7 @@ class EventRepository(BaseRepository[Event]):
         if starts_to is not None:
             filters.append(Event.starts_at < starts_to)
         return await self.list(filters, skip, limit, order_by=(Event.starts_at,))
+
+    async def add_all(self, events: list[Event]) -> None:
+        self.session.add_all(events)
+        await self.session.commit()

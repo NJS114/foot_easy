@@ -23,6 +23,15 @@ export type Invitation = Schemas["InvitationResponse"];
 export type InvitationReply = Schemas["InvitationReply"];
 export type AvailabilitySummary = Schemas["AvailabilitySummary"];
 export type ErrorEnvelope = Schemas["ErrorResponse"];
+export type AttendanceReport = Schemas["AttendanceReport"];
+export type AttendanceRow = Schemas["AttendanceRow"];
+export type TaskReport = Schemas["TaskReport"];
+export type TaskRow = Schemas["TaskRow"];
+export type TeamTaskResponse = Schemas["TeamTaskResponse"];
+export type TeamTaskCreate = Schemas["TeamTaskCreate"];
+export type AssignmentResponse = Schemas["AssignmentResponse"];
+export type AssignmentCreate = Schemas["AssignmentCreate"];
+export type ImportReport = Schemas["ImportReport"];
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://api.foot-easy.localhost";
 

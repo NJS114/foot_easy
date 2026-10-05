@@ -9,6 +9,7 @@ from app.event.router import get_event_service
 from app.invitation.models import Availability
 from app.invitation.repository import InvitationRepository
 from app.invitation.schemas import (
+    AttendanceUpdate,
     AvailabilitySummary,
     InvitationCreate,
     InvitationListResponse,
@@ -74,6 +75,14 @@ async def partial_update_invitation(
 ) -> InvitationResponse:
     """Record a member's availability for the event."""
     return await service.reply(invitation_id, data)
+
+
+@router.patch("/{invitation_id}/attendance", response_model=InvitationResponse)
+async def update_attendance(
+    invitation_id: uuid.UUID, data: AttendanceUpdate, service: InvitationServiceDep
+) -> InvitationResponse:
+    """Record the actual attendance (on time, late, excused, unexcused, injured)."""
+    return await service.record_attendance(invitation_id, data)
 
 
 @router.delete("/{invitation_id}", status_code=status.HTTP_204_NO_CONTENT)

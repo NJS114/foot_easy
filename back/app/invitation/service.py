@@ -7,6 +7,7 @@ from app.invitation.exceptions import InvitationNotFoundError, MemberNotInTeamEr
 from app.invitation.models import Availability, Invitation
 from app.invitation.repository import InvitationRepository
 from app.invitation.schemas import (
+    AttendanceUpdate,
     AvailabilitySummary,
     InvitationCreate,
     InvitationReply,
@@ -74,6 +75,15 @@ class InvitationService:
         invitation.availability = data.availability
         invitation.comment = data.comment
         invitation.responded_at = utc_now()
+        await self.repository.save(invitation)
+        return await self.get_invitation(invitation_id)
+
+    async def record_attendance(
+        self, invitation_id: uuid.UUID, data: AttendanceUpdate
+    ) -> Invitation:
+        """Record (or clear) what actually happened on the day for this member."""
+        invitation = await self.get_invitation(invitation_id)
+        invitation.attendance = data.attendance
         await self.repository.save(invitation)
         return await self.get_invitation(invitation_id)
 

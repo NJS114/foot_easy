@@ -5,7 +5,7 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, Field, StringConstraints
 
 from app.core.schemas import OrmModel, PaginatedResponse
-from app.invitation.models import Availability
+from app.invitation.models import AttendanceStatus, Availability
 from app.member.models import MemberRole, PlayerPosition
 
 
@@ -31,6 +31,10 @@ class InvitationReply(BaseModel):
     comment: Annotated[str, StringConstraints(strip_whitespace=True, max_length=200)] | None = None
 
 
+class AttendanceUpdate(BaseModel):
+    attendance: AttendanceStatus | None
+
+
 class InvitedMember(OrmModel):
     id: uuid.UUID
     first_name: str
@@ -48,6 +52,7 @@ class InvitationResponse(OrmModel):
     responded_at: datetime | None
     reminder_count: int
     last_reminded_at: datetime | None
+    attendance: AttendanceStatus | None
     member: InvitedMember
 
 

@@ -19,7 +19,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/", labelKey: "nav.dashboard", icon: LayoutDashboard },
   { to: "/calendar", labelKey: "nav.calendar", icon: CalendarDays },
   { to: "/teams", labelKey: "nav.sport", icon: Trophy },
-  { to: "/members", labelKey: "nav.members", icon: Users, soon: true },
+  { to: "/members", labelKey: "nav.members", icon: Users },
   { to: "/messaging", labelKey: "nav.messaging", icon: MessagesSquare, soon: true },
   { to: "/payments", labelKey: "nav.payments", icon: CreditCard, soon: true },
   { to: "/sponsors", labelKey: "nav.sponsors", icon: Megaphone, soon: true },

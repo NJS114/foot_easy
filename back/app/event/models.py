@@ -2,7 +2,16 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Index, SmallInteger, String, Text
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    ForeignKey,
+    Index,
+    SmallInteger,
+    String,
+    Text,
+    Uuid,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base, IdMixin, TimestampMixin, UtcDateTime, str_enum
@@ -43,3 +52,4 @@ class Event(IdMixin, TimestampMixin, Base):
     is_cancelled: Mapped[bool] = mapped_column(Boolean, default=False)
     score_for: Mapped[int | None] = mapped_column(SmallInteger)
     score_against: Mapped[int | None] = mapped_column(SmallInteger)
+    series_id: Mapped[uuid.UUID | None] = mapped_column(Uuid, index=True)

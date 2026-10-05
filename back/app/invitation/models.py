@@ -16,6 +16,19 @@ class Availability(enum.StrEnum):
     UNAVAILABLE = "unavailable"
 
 
+class AttendanceStatus(enum.StrEnum):
+    """What actually happened on the day, recorded by the coach."""
+
+    ON_TIME = "on_time"
+    LATE = "late"
+    EXCUSED = "excused"
+    UNEXCUSED = "unexcused"
+    INJURED = "injured"
+
+
+PRESENT_STATUSES = frozenset({AttendanceStatus.ON_TIME, AttendanceStatus.LATE})
+
+
 class Invitation(IdMixin, TimestampMixin, Base):
     __tablename__ = "invitations"
     __table_args__ = (
@@ -35,5 +48,6 @@ class Invitation(IdMixin, TimestampMixin, Base):
     responded_at: Mapped[datetime | None] = mapped_column(UtcDateTime)
     reminder_count: Mapped[int] = mapped_column(SmallInteger, default=0)
     last_reminded_at: Mapped[datetime | None] = mapped_column(UtcDateTime)
+    attendance: Mapped[AttendanceStatus | None] = mapped_column(str_enum(AttendanceStatus))
 
     member: Mapped[Member] = relationship(lazy="raise")

@@ -14,3 +14,15 @@ class ShirtNumberTakenError(ConflictError):
 class PositionNotAllowedError(BusinessRuleError):
     def __init__(self):
         super().__init__("position_not_allowed", "Only players can have a position or shirt number")
+
+
+class MissingScopeError(BusinessRuleError):
+    def __init__(self):
+        super().__init__("missing_scope", "Filter members by team_id or club_id")
+
+
+class InvalidImportError(BusinessRuleError):
+    def __init__(self, errors: list[tuple[str, str]]):
+        super().__init__(
+            "invalid_import", f"{len(errors)} error(s) in the file, nothing was imported", errors
+        )
