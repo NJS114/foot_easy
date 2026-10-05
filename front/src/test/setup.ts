@@ -10,3 +10,11 @@ afterEach(() => {
   cleanup();
 });
 afterAll(() => server.close());
+
+// jsdom has no native modal implementation; browser QA exercises the real focus trap.
+HTMLDialogElement.prototype.showModal = function () {
+  this.setAttribute("open", "");
+};
+HTMLDialogElement.prototype.close = function () {
+  this.removeAttribute("open");
+};

@@ -45,6 +45,7 @@ describe("Club space", () => {
       http.get(apiUrl("/events"), () => HttpResponse.json(page([MATCH, TRAINING]))),
     );
     renderRoute("/calendar");
+    await userEvent.click(await screen.findByRole("button", { name: "Agenda" }));
     expect(await screen.findByText("Séance vitesse")).toBeInTheDocument();
 
     await userEvent.selectOptions(screen.getByLabelText("Type"), "match");

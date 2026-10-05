@@ -1,5 +1,6 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient, type EventCreate, type EventUpdate } from "@/api/client";
+import { allPages } from "@/api/pagination";
 import { unwrap } from "@/api/errors";
 
 export const eventKeys = {
@@ -8,8 +9,12 @@ export const eventKeys = {
 };
 
 async function fetchTeamEvents(teamId: string) {
-  return unwrap(
-    await apiClient.GET("/api/v1/events", { params: { query: { team_id: teamId, limit: 100 } } }),
+  return allPages(async (skip) =>
+    unwrap(
+      await apiClient.GET("/api/v1/events", {
+        params: { query: { team_id: teamId, skip, limit: 100 } },
+      }),
+    ),
   );
 }
 
@@ -69,7 +74,19 @@ export function useUpdateEvent(eventId: string) {
       ),
     onSuccess: (event) => {
       queryClient.setQueryData(eventKeys.detail(event.id), event);
-      return queryClient.invalidateQueries({ queryKey: ["events", "team"] });
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["events", "team"] }),
+        queryClient.invalidateQueries({ queryKey: ["stats"] }),
+      ]);
     },
+  });
+}
+
+export function useCreateEventSeries() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: import("@/api/client").Schemas["EventSeriesCreate"]) =>
+      unwrap(await apiClient.POST("/api/v1/events/series", { body })),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["events", "team"] }),
   });
 }

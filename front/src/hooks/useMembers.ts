@@ -1,59 +1,81 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { apiClient, type MemberCreate } from "@/api/client";
+import {
+  API_BASE_URL,
+  apiClient,
+  type ImportReport,
+  type Member,
+  type MemberCreate,
+  type Schemas,
+} from "@/api/client";
 import { unwrap } from "@/api/errors";
+import { allPages } from "@/api/pagination";
+import { downloadBlob } from "@/lib/download";
 
 export const memberKeys = {
   byTeam: (teamId: string) => ["members", teamId] as const,
   byClub: (clubId: string) => ["members", "club", clubId] as const,
 };
-
+export type DirectoryFilters = {
+  search?: string;
+  role?: Member["role"];
+  sort?: Schemas["MemberSort"];
+  team_id?: string;
+};
 export function useMembers(teamId: string) {
   return useQuery({
     queryKey: memberKeys.byTeam(teamId),
-    queryFn: async () =>
-      unwrap(
-        await apiClient.GET("/api/v1/members", {
-          params: { query: { team_id: teamId, limit: 100 } },
-        }),
+    enabled: !!teamId,
+    queryFn: () =>
+      allPages(async (skip) =>
+        unwrap(
+          await apiClient.GET("/api/v1/members", {
+            params: { query: { team_id: teamId, skip, limit: 100 } },
+          }),
+        ),
       ),
   });
 }
-
-export function useClubMembers(
-  clubId: string,
-  params?: { search?: string; role?: string; sort?: string },
-) {
+export function useClubMembers(clubId: string, params?: DirectoryFilters) {
   return useQuery({
     queryKey: [...memberKeys.byClub(clubId), params],
-    queryFn: async () =>
-      unwrap(
-        await apiClient.GET("/api/v1/members", {
-          params: {
-            query: {
-              club_id: clubId,
-              limit: 200,
-              ...(params?.search ? { search: params.search } : {}),
-              ...(params?.role ? { role: params.role as never } : {}),
-              ...(params?.sort ? { sort: params.sort as never } : {}),
-            },
-          },
-        }),
+    queryFn: () =>
+      allPages(async (skip) =>
+        unwrap(
+          await apiClient.GET("/api/v1/members", {
+            params: { query: { club_id: clubId, skip, limit: 100, ...params } },
+          }),
+        ),
       ),
   });
 }
-
 export function useCreateMember() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (body: MemberCreate) =>
       unwrap(await apiClient.POST("/api/v1/members", { body })),
-    onSuccess: (member) =>
-      queryClient.invalidateQueries({ queryKey: memberKeys.byTeam(member.team_id) }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["members"] }),
   });
 }
-
-export function useDeleteMember(teamId: string) {
-  const queryClient = useQueryClient();
+export function useUpdateMember(memberId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: Schemas["MemberUpdate"]) =>
+      unwrap(
+        await apiClient.PATCH("/api/v1/members/{member_id}", {
+          params: { path: { member_id: memberId } },
+          body,
+        }),
+      ),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: ["members"] }),
+        qc.invalidateQueries({ queryKey: ["invitations"] }),
+        qc.invalidateQueries({ queryKey: ["stats"] }),
+      ]),
+  });
+}
+export function useDeleteMember() {
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: async (memberId: string) =>
       unwrap(
@@ -61,39 +83,42 @@ export function useDeleteMember(teamId: string) {
           params: { path: { member_id: memberId } },
         }),
       ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: memberKeys.byTeam(teamId) }),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: ["members"] }),
+        qc.invalidateQueries({ queryKey: ["stats"] }),
+        qc.invalidateQueries({ queryKey: ["invitations"] }),
+      ]),
   });
 }
-
 export function useImportMembers() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async ({ teamId, file }: { teamId: string; file: File }) => {
+    mutationFn: async ({ teamId, file }: { teamId: string; file: File }): Promise<ImportReport> => {
       const body = new FormData();
       body.append("file", file);
-      const response = await fetch(`${apiClient.baseUrl}/api/v1/members/import?team_id=${teamId}`, {
-        method: "POST",
-        body,
-      });
-      if (!response.ok) throw await response.json();
-      return (await response.json()) as { created: number; skipped: number };
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/members/import?team_id=${encodeURIComponent(teamId)}`,
+        { method: "POST", body },
+      );
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Import impossible");
+      }
+      return response.json();
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["members"] }),
   });
 }
-
 export function useExportMembers() {
   return useMutation({
-    mutationFn: async (teamId: string) => {
-      const response = await fetch(`${apiClient.baseUrl}/api/v1/members/export?team_id=${teamId}`);
-      if (!response.ok) throw new Error("Export failed");
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "membres.csv";
-      link.click();
-      URL.revokeObjectURL(url);
+    mutationFn: async (filters: DirectoryFilters & { club_id: string }) => {
+      const params = new URLSearchParams(
+        Object.entries(filters).filter((entry): entry is [string, string] => !!entry[1]),
+      );
+      const response = await fetch(`${API_BASE_URL}/api/v1/members/export?${params}`);
+      if (!response.ok) throw new Error("Impossible d’exporter les membres.");
+      downloadBlob(await response.blob(), "membres.csv");
     },
   });
 }

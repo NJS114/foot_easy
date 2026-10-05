@@ -12,6 +12,7 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    proxy: { "/api": "http://127.0.0.1:8000" },
     // Traefik forwards requests with the *.localhost host header.
     allowedHosts: [".localhost"],
   },
@@ -19,7 +20,7 @@ export default defineConfig({
     globals: true,
     // React only ships act() in its development build; a global NODE_ENV=production would hide it.
     env: { NODE_ENV: "test" },
-    environment: "jsdom",
+    environment: "./src/test/environment.ts",
     setupFiles: ["./src/test/setup.ts"],
     css: false,
   },

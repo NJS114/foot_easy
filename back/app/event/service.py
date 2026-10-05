@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from app.event.exceptions import (
     EventNotFoundError,
@@ -31,11 +32,15 @@ MAX_SERIES_OCCURRENCES = 60
 
 
 def build_series(data: EventSeriesCreate) -> list[Event]:
-    """Weekly copies of the first occurrence sharing a series id, at the same UTC offset."""
+    """Weekly copies preserving the local start time across daylight-saving changes."""
     step = timedelta(weeks=data.interval_weeks)
-    fields = data.model_dump(exclude={"repeat_until", "interval_weeks"})
+    fields = data.model_dump(exclude={"repeat_until", "interval_weeks", "timezone"})
+    zone = ZoneInfo(data.timezone)
+    for key in ("starts_at", "ends_at", "meeting_at"):
+        if fields[key] is not None:
+            fields[key] = fields[key].astimezone(zone)
     series_id, occurrences, shift = uuid.uuid4(), [], timedelta(0)
-    while (data.starts_at + shift).date() <= data.repeat_until:
+    while (fields["starts_at"] + shift).date() <= data.repeat_until:
         if len(occurrences) == MAX_SERIES_OCCURRENCES:
             raise InvalidSeriesError(f"A series has at most {MAX_SERIES_OCCURRENCES} occurrences")
         shifted = {

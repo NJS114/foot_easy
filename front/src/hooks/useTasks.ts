@@ -54,7 +54,11 @@ export function useAssignTask(eventId: string) {
   return useMutation({
     mutationFn: async (body: AssignmentCreate) =>
       unwrap(await apiClient.POST("/api/v1/tasks/assignments", { body })),
-    onSuccess: () => qc.invalidateQueries({ queryKey: taskKeys.assignments(eventId) }),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: taskKeys.assignments(eventId) }),
+        qc.invalidateQueries({ queryKey: ["stats"] }),
+      ]),
   });
 }
 
@@ -67,6 +71,28 @@ export function useUnassignTask(eventId: string) {
           params: { path: { assignment_id: assignmentId } },
         }),
       ),
-    onSuccess: () => qc.invalidateQueries({ queryKey: taskKeys.assignments(eventId) }),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: taskKeys.assignments(eventId) }),
+        qc.invalidateQueries({ queryKey: ["stats"] }),
+      ]),
+  });
+}
+
+export function useDeleteTask(teamId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (taskId: string) =>
+      unwrap(
+        await apiClient.DELETE("/api/v1/tasks/{task_id}", {
+          params: { path: { task_id: taskId } },
+        }),
+      ),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: taskKeys.byTeam(teamId) }),
+        qc.invalidateQueries({ queryKey: ["taskAssignments"] }),
+        qc.invalidateQueries({ queryKey: ["stats"] }),
+      ]),
   });
 }

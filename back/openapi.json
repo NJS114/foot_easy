@@ -701,17 +701,41 @@
           "Members"
         ],
         "summary": "List Members",
-        "description": "List a team's roster, optionally filtered by role.",
+        "description": "List a team roster or the club directory, with role filter, search and sort.",
         "operationId": "list_members_api_v1_members_get",
         "parameters": [
           {
             "name": "team_id",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string",
-              "format": "uuid",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
               "title": "Team Id"
+            }
+          },
+          {
+            "name": "club_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Club Id"
             }
           },
           {
@@ -728,6 +752,31 @@
                 }
               ],
               "title": "Role"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/MemberSort",
+              "default": "role"
             }
           },
           {
@@ -802,7 +851,7 @@
           "Members"
         ],
         "summary": "Create Member",
-        "description": "Add a member to a team; shirt numbers are unique within a team.",
+        "description": "Add a member to a team or group; shirt numbers are unique within a team.",
         "operationId": "create_member_api_v1_members_post",
         "requestBody": {
           "required": true,
@@ -821,6 +870,205 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/MemberResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/members/export": {
+      "get": {
+        "tags": [
+          "Members"
+        ],
+        "summary": "Export Members",
+        "description": "Export the filtered members as a CSV file readable by Excel.",
+        "operationId": "export_members_api_v1_members_export_get",
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Team Id"
+            }
+          },
+          {
+            "name": "club_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Club Id"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MemberRole"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Role"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/MemberSort",
+              "default": "role"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/csv": {}
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/members/import": {
+      "post": {
+        "tags": [
+          "Members"
+        ],
+        "summary": "Import Members",
+        "description": "Import a roster file into a team; nothing is created if any row is invalid.",
+        "operationId": "import_members_api_v1_members_import_post",
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Team Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_import_members_api_v1_members_import_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportReport"
                 }
               }
             }
@@ -1437,6 +1685,72 @@
         }
       }
     },
+    "/api/v1/events/series": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "Create Event Series",
+        "description": "Create a recurring event (e.g. training every Tuesday) up to a given date.",
+        "operationId": "create_event_series_api_v1_events_series_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventSeriesCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/EventResponse"
+                  },
+                  "type": "array",
+                  "title": "Response Create Event Series Api V1 Events Series Post"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/invitations": {
       "get": {
         "tags": [
@@ -1825,6 +2139,80 @@
         "responses": {
           "204": {
             "description": "Successful Response"
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/invitations/{invitation_id}/attendance": {
+      "patch": {
+        "tags": [
+          "Invitations"
+        ],
+        "summary": "Update Attendance",
+        "description": "Record the actual attendance (on time, late, excused, unexcused, injured).",
+        "operationId": "update_attendance_api_v1_invitations__invitation_id__attendance_patch",
+        "parameters": [
+          {
+            "name": "invitation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Invitation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttendanceUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvitationResponse"
+                }
+              }
+            }
           },
           "404": {
             "description": "Resource not found",
@@ -2316,7 +2704,6 @@
           "Stats"
         ],
         "summary": "Get Team Stats",
-        "description": "Season record of a team and its players: goals, assists, cards, selections, attendance.",
         "operationId": "get_team_stats_api_v1_stats_teams__team_id__get",
         "parameters": [
           {
@@ -2340,6 +2727,600 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stats/teams/{team_id}/attendance": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Get Attendance Report",
+        "operationId": "get_attendance_report_api_v1_stats_teams__team_id__attendance_get",
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Team Id"
+            }
+          },
+          {
+            "name": "until",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttendanceReport"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/stats/teams/{team_id}/tasks": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Get Task Report",
+        "operationId": "get_task_report_api_v1_stats_teams__team_id__tasks_get",
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Team Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskReport"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tasks": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "List Tasks",
+        "description": "List the team's task catalog.",
+        "operationId": "list_tasks_api_v1_tasks_get",
+        "parameters": [
+          {
+            "name": "team_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Team Id"
+            }
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse_TeamTaskResponse_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Create Task",
+        "description": "Add a custom task to the team's catalog.",
+        "operationId": "create_task_api_v1_tasks_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TeamTaskCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamTaskResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tasks/defaults": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Add Default Tasks",
+        "description": "Add the usual football chores missing from the catalog (idempotent).",
+        "operationId": "add_default_tasks_api_v1_tasks_defaults_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DefaultTasksRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultTasksResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tasks/assignments": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "List Assignments",
+        "description": "List who does what for an event.",
+        "operationId": "list_assignments_api_v1_tasks_assignments_get",
+        "parameters": [
+          {
+            "name": "event_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Event Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssignmentResponse"
+                  },
+                  "title": "Response List Assignments Api V1 Tasks Assignments Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Create Assignment",
+        "description": "Assign a task to a team member for an event.",
+        "operationId": "create_assignment_api_v1_tasks_assignments_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignmentCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tasks/assignments/{assignment_id}": {
+      "delete": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Delete Assignment",
+        "description": "Remove an assignment.",
+        "operationId": "delete_assignment_api_v1_tasks_assignments__assignment_id__delete",
+        "parameters": [
+          {
+            "name": "assignment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Assignment Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Resource not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation or business rule error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tasks/{task_id}": {
+      "delete": {
+        "tags": [
+          "Tasks"
+        ],
+        "summary": "Delete Task",
+        "description": "Remove a task from the catalog with its assignments.",
+        "operationId": "delete_task_api_v1_tasks__task_id__delete",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
           },
           "404": {
             "description": "Resource not found",
@@ -2403,6 +3384,152 @@
   },
   "components": {
     "schemas": {
+      "AssignmentCreate": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          },
+          "team_task_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Task Id"
+          },
+          "member_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Member Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "team_task_id",
+          "member_id"
+        ],
+        "title": "AssignmentCreate"
+      },
+      "AssignmentResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "event_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Event Id"
+          },
+          "task": {
+            "$ref": "#/components/schemas/TeamTaskResponse"
+          },
+          "member": {
+            "$ref": "#/components/schemas/InvitedMember"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "event_id",
+          "task",
+          "member"
+        ],
+        "title": "AssignmentResponse"
+      },
+      "AttendanceReport": {
+        "properties": {
+          "team_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Id"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/EventColumn"
+            },
+            "type": "array",
+            "title": "Events"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/AttendanceRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "team_id",
+          "events",
+          "rows"
+        ],
+        "title": "AttendanceReport"
+      },
+      "AttendanceRow": {
+        "properties": {
+          "member": {
+            "$ref": "#/components/schemas/InvitedMember"
+          },
+          "cells": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Cells",
+            "description": "One per event column: attendance if recorded, else the availability answer, else 'not_invited'"
+          },
+          "present": {
+            "type": "integer",
+            "title": "Present"
+          },
+          "invited": {
+            "type": "integer",
+            "title": "Invited"
+          }
+        },
+        "type": "object",
+        "required": [
+          "member",
+          "cells",
+          "present",
+          "invited"
+        ],
+        "title": "AttendanceRow"
+      },
+      "AttendanceStatus": {
+        "type": "string",
+        "enum": [
+          "on_time",
+          "late",
+          "excused",
+          "unexcused",
+          "injured"
+        ],
+        "title": "AttendanceStatus",
+        "description": "What actually happened on the day, recorded by the coach."
+      },
+      "AttendanceUpdate": {
+        "properties": {
+          "attendance": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttendanceStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "attendance"
+        ],
+        "title": "AttendanceUpdate"
+      },
       "Availability": {
         "type": "string",
         "enum": [
@@ -2451,6 +3578,21 @@
           "unavailable"
         ],
         "title": "AvailabilitySummary"
+      },
+      "Body_import_members_api_v1_members_import_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "description": "CSV (; or ,) or XLSX roster"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_import_members_api_v1_members_import_post"
       },
       "ClubCreate": {
         "properties": {
@@ -2576,6 +3718,33 @@
         "type": "object",
         "title": "ClubUpdate"
       },
+      "DefaultTasksRequest": {
+        "properties": {
+          "team_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "team_id"
+        ],
+        "title": "DefaultTasksRequest"
+      },
+      "DefaultTasksResult": {
+        "properties": {
+          "added": {
+            "type": "integer",
+            "title": "Added"
+          }
+        },
+        "type": "object",
+        "required": [
+          "added"
+        ],
+        "title": "DefaultTasksResult"
+      },
       "ErrorResponse": {
         "properties": {
           "code": {
@@ -2612,6 +3781,35 @@
           "message"
         ],
         "title": "ErrorResponse"
+      },
+      "EventColumn": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EventKind"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "kind",
+          "starts_at"
+        ],
+        "title": "EventColumn"
       },
       "EventCreate": {
         "properties": {
@@ -2840,6 +4038,18 @@
             ],
             "title": "Score Against"
           },
+          "series_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Series Id"
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -2862,9 +4072,129 @@
           "is_cancelled",
           "score_for",
           "score_against",
+          "series_id",
           "created_at"
         ],
         "title": "EventResponse"
+      },
+      "EventSeriesCreate": {
+        "properties": {
+          "team_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Id"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/EventKind"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Starts At"
+          },
+          "ends_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ends At"
+          },
+          "meeting_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Meeting At"
+          },
+          "location": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Location"
+          },
+          "opponent": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Opponent"
+          },
+          "venue": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Venue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "repeat_until": {
+            "type": "string",
+            "format": "date",
+            "title": "Repeat Until"
+          },
+          "interval_weeks": {
+            "type": "integer",
+            "maximum": 4.0,
+            "minimum": 1.0,
+            "title": "Interval Weeks",
+            "default": 1
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone",
+            "default": "UTC"
+          }
+        },
+        "type": "object",
+        "required": [
+          "team_id",
+          "kind",
+          "title",
+          "starts_at",
+          "repeat_until"
+        ],
+        "title": "EventSeriesCreate",
+        "description": "The first occurrence, repeated every `interval_weeks` until `repeat_until` (inclusive)."
       },
       "EventUpdate": {
         "properties": {
@@ -3056,6 +4386,24 @@
         ],
         "title": "FormationResponse"
       },
+      "ImportReport": {
+        "properties": {
+          "imported": {
+            "type": "integer",
+            "title": "Imported"
+          },
+          "skipped": {
+            "type": "integer",
+            "title": "Skipped"
+          }
+        },
+        "type": "object",
+        "required": [
+          "imported",
+          "skipped"
+        ],
+        "title": "ImportReport"
+      },
       "InvitationCreate": {
         "properties": {
           "event_id": {
@@ -3171,6 +4519,16 @@
             ],
             "title": "Last Reminded At"
           },
+          "attendance": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttendanceStatus"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "member": {
             "$ref": "#/components/schemas/InvitedMember"
           }
@@ -3184,6 +4542,7 @@
           "responded_at",
           "reminder_count",
           "last_reminded_at",
+          "attendance",
           "member"
         ],
         "title": "InvitationResponse"
@@ -3238,6 +4597,23 @@
           "shirt_number"
         ],
         "title": "InvitedMember"
+      },
+      "JerseySize": {
+        "type": "string",
+        "enum": [
+          "6y",
+          "8y",
+          "10y",
+          "12y",
+          "14y",
+          "xs",
+          "s",
+          "m",
+          "l",
+          "xl",
+          "xxl"
+        ],
+        "title": "JerseySize"
       },
       "LineupResponse": {
         "properties": {
@@ -3425,23 +4801,6 @@
       },
       "MemberCreate": {
         "properties": {
-          "team_id": {
-            "type": "string",
-            "format": "uuid",
-            "title": "Team Id"
-          },
-          "first_name": {
-            "type": "string",
-            "maxLength": 80,
-            "minLength": 1,
-            "title": "First Name"
-          },
-          "last_name": {
-            "type": "string",
-            "maxLength": 80,
-            "minLength": 1,
-            "title": "Last Name"
-          },
           "email": {
             "anyOf": [
               {
@@ -3454,9 +4813,51 @@
             ],
             "title": "Email"
           },
-          "role": {
-            "$ref": "#/components/schemas/MemberRole",
-            "default": "player"
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[+0-9 .()-]{6,30}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "birth_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Birth Date"
+          },
+          "license_number": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License Number"
+          },
+          "jersey_size": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JerseySize"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "position": {
             "anyOf": [
@@ -3480,6 +4881,27 @@
               }
             ],
             "title": "Shirt Number"
+          },
+          "team_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Id"
+          },
+          "first_name": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "First Name"
+          },
+          "last_name": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Last Name"
+          },
+          "role": {
+            "$ref": "#/components/schemas/MemberRole",
+            "default": "player"
           }
         },
         "type": "object",
@@ -3521,6 +4943,50 @@
             ],
             "title": "Email"
           },
+          "phone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "birth_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Birth Date"
+          },
+          "license_number": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License Number"
+          },
+          "jersey_size": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JerseySize"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "role": {
             "$ref": "#/components/schemas/MemberRole"
           },
@@ -3558,6 +5024,10 @@
           "first_name",
           "last_name",
           "email",
+          "phone",
+          "birth_date",
+          "license_number",
+          "jersey_size",
           "role",
           "position",
           "shirt_number",
@@ -3570,38 +5040,28 @@
         "enum": [
           "player",
           "coach",
-          "staff"
+          "staff",
+          "president",
+          "secretary",
+          "treasurer",
+          "technical_director",
+          "volunteer",
+          "referee"
         ],
         "title": "MemberRole"
       },
+      "MemberSort": {
+        "type": "string",
+        "enum": [
+          "last_name",
+          "first_name",
+          "role",
+          "shirt_number"
+        ],
+        "title": "MemberSort"
+      },
       "MemberUpdate": {
         "properties": {
-          "first_name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 80,
-                "minLength": 1
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "First Name"
-          },
-          "last_name": {
-            "anyOf": [
-              {
-                "type": "string",
-                "maxLength": 80,
-                "minLength": 1
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Last Name"
-          },
           "email": {
             "anyOf": [
               {
@@ -3614,10 +5074,46 @@
             ],
             "title": "Email"
           },
-          "role": {
+          "phone": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/MemberRole"
+                "type": "string",
+                "pattern": "^[+0-9 .()-]{6,30}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Phone"
+          },
+          "birth_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Birth Date"
+          },
+          "license_number": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License Number"
+          },
+          "jersey_size": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/JerseySize"
               },
               {
                 "type": "null"
@@ -3646,6 +5142,42 @@
               }
             ],
             "title": "Shirt Number"
+          },
+          "first_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "First Name"
+          },
+          "last_name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Name"
+          },
+          "role": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MemberRole"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "type": "object",
@@ -3867,6 +5399,42 @@
         ],
         "title": "PaginatedResponse[TeamResponse]"
       },
+      "PaginatedResponse_TeamTaskResponse_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TeamTaskResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "skip": {
+            "type": "integer",
+            "title": "Skip"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "has_more": {
+            "type": "boolean",
+            "title": "Has More"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "skip",
+          "limit",
+          "has_more"
+        ],
+        "title": "PaginatedResponse[TeamTaskResponse]"
+      },
       "PlayerPosition": {
         "type": "string",
         "enum": [
@@ -3910,6 +5478,10 @@
             "type": "integer",
             "title": "Present"
           },
+          "absences": {
+            "type": "integer",
+            "title": "Absences"
+          },
           "attendance_rate": {
             "anyOf": [
               {
@@ -3932,6 +5504,7 @@
           "red_cards",
           "invited",
           "present",
+          "absences",
           "attendance_rate"
         ],
         "title": "PlayerStats"
@@ -4036,6 +5609,101 @@
         ],
         "title": "SlotRole"
       },
+      "TaskColumn": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "icon": {
+            "$ref": "#/components/schemas/TaskIcon"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "icon"
+        ],
+        "title": "TaskColumn"
+      },
+      "TaskIcon": {
+        "type": "string",
+        "enum": [
+          "laundry",
+          "ball",
+          "water",
+          "car",
+          "flag",
+          "key",
+          "shirt",
+          "food",
+          "medkit",
+          "other"
+        ],
+        "title": "TaskIcon"
+      },
+      "TaskReport": {
+        "properties": {
+          "team_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Id"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/TaskColumn"
+            },
+            "type": "array",
+            "title": "Tasks"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/TaskRow"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "type": "object",
+        "required": [
+          "team_id",
+          "tasks",
+          "rows"
+        ],
+        "title": "TaskReport"
+      },
+      "TaskRow": {
+        "properties": {
+          "member": {
+            "$ref": "#/components/schemas/InvitedMember"
+          },
+          "counts": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Counts",
+            "description": "One per task column"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "member",
+          "counts",
+          "total"
+        ],
+        "title": "TaskRow"
+      },
       "TeamCategory": {
         "type": "string",
         "enum": [
@@ -4047,7 +5715,8 @@
           "u17",
           "u19",
           "senior",
-          "veteran"
+          "veteran",
+          "office"
         ],
         "title": "TeamCategory"
       },
@@ -4170,6 +5839,19 @@
             "type": "integer",
             "title": "Goals Against"
           },
+          "form": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "W",
+                "D",
+                "L"
+              ]
+            },
+            "type": "array",
+            "title": "Form",
+            "description": "Last results, oldest first"
+          },
           "players": {
             "items": {
               "$ref": "#/components/schemas/PlayerStats"
@@ -4187,9 +5869,64 @@
           "losses",
           "goals_for",
           "goals_against",
+          "form",
           "players"
         ],
         "title": "TeamStats"
+      },
+      "TeamTaskCreate": {
+        "properties": {
+          "team_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Id"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "icon": {
+            "$ref": "#/components/schemas/TaskIcon",
+            "default": "other"
+          }
+        },
+        "type": "object",
+        "required": [
+          "team_id",
+          "name"
+        ],
+        "title": "TeamTaskCreate"
+      },
+      "TeamTaskResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "team_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Team Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "icon": {
+            "$ref": "#/components/schemas/TaskIcon"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "team_id",
+          "name",
+          "icon"
+        ],
+        "title": "TeamTaskResponse"
       },
       "TeamUpdate": {
         "properties": {

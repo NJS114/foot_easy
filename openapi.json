@@ -705,11 +705,78 @@
         "operationId": "list_members_api_v1_members_get",
         "parameters": [
           {
-            "name": "query",
+            "name": "team_id",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "$ref": "#/components/schemas/MemberQuery"
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Team Id"
+            }
+          },
+          {
+            "name": "club_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Club Id"
+            }
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/MemberRole"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Role"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Search"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/MemberSort",
+              "default": "role"
             }
           },
           {
@@ -4111,6 +4178,11 @@
             "minimum": 1.0,
             "title": "Interval Weeks",
             "default": 1
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone",
+            "default": "UTC"
           }
         },
         "type": "object",
@@ -4839,62 +4911,6 @@
           "last_name"
         ],
         "title": "MemberCreate"
-      },
-      "MemberQuery": {
-        "properties": {
-          "team_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Team Id"
-          },
-          "club_id": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Club Id"
-          },
-          "role": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/MemberRole"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "search": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Search"
-          },
-          "sort": {
-            "$ref": "#/components/schemas/MemberSort",
-            "default": "role"
-          }
-        },
-        "type": "object",
-        "title": "MemberQuery",
-        "description": "Directory filters: a team roster or the whole club."
       },
       "MemberResponse": {
         "properties": {

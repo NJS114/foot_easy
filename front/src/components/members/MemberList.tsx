@@ -8,7 +8,7 @@ import { useDeleteMember, useMembers } from "@/hooks/useMembers";
 export function MemberList({ teamId }: { teamId: string }) {
   const { t } = useTranslation();
   const { data, isLoading, error } = useMembers(teamId);
-  const deleteMember = useDeleteMember(teamId);
+  const deleteMember = useDeleteMember();
 
   if (isLoading) return <LoadingState />;
   if (error) return <ErrorState error={error} />;

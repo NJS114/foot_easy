@@ -954,6 +954,11 @@ export interface components {
              * @default 1
              */
             interval_weeks: number;
+            /**
+             * Timezone
+             * @default UTC
+             */
+            timezone: string;
         };
         /** EventUpdate */
         EventUpdate: {
@@ -1181,21 +1186,6 @@ export interface components {
             last_name: string;
             /** @default player */
             role: components["schemas"]["MemberRole"];
-        };
-        /**
-         * MemberQuery
-         * @description Directory filters: a team roster or the whole club.
-         */
-        MemberQuery: {
-            /** Team Id */
-            team_id?: string | null;
-            /** Club Id */
-            club_id?: string | null;
-            role?: components["schemas"]["MemberRole"] | null;
-            /** Search */
-            search?: string | null;
-            /** @default role */
-            sort: components["schemas"]["MemberSort"];
         };
         /** MemberResponse */
         MemberResponse: {
@@ -2098,8 +2088,12 @@ export interface operations {
     };
     list_members_api_v1_members_get: {
         parameters: {
-            query: {
-                query: components["schemas"]["MemberQuery"];
+            query?: {
+                team_id?: string | null;
+                club_id?: string | null;
+                role?: components["schemas"]["MemberRole"] | null;
+                search?: string | null;
+                sort?: components["schemas"]["MemberSort"];
                 skip?: number;
                 limit?: number;
             };

@@ -1,8 +1,9 @@
 import uuid
 from datetime import date, datetime
 from typing import Annotated
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import AwareDatetime, BaseModel, Field, StringConstraints
+from pydantic import AwareDatetime, BaseModel, Field, StringConstraints, field_validator
 
 from app.core.schemas import OrmModel, PaginatedResponse
 from app.event.models import EventKind, Venue
@@ -30,6 +31,16 @@ class EventSeriesCreate(EventCreate):
 
     repeat_until: date
     interval_weeks: Annotated[int, Field(ge=1, le=4)] = 1
+    timezone: str = "UTC"
+
+    @field_validator("timezone")
+    @classmethod
+    def valid_timezone(cls, value: str) -> str:
+        try:
+            ZoneInfo(value)
+        except (ZoneInfoNotFoundError, ValueError) as error:
+            raise ValueError("Unknown IANA timezone") from error
+        return value
 
 
 class EventUpdate(BaseModel):

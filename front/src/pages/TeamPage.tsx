@@ -8,6 +8,7 @@ import { ErrorState, LoadingState } from "@/components/StateViews";
 import { AttendanceGrid } from "@/components/stats/AttendanceGrid";
 import { TaskBilan } from "@/components/stats/TaskBilan";
 import { TeamStatsView } from "@/components/stats/TeamStatsView";
+import { TaskCatalog } from "@/components/tasks/TaskCatalog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,7 +24,7 @@ export function TeamPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <header className="flex flex-wrap items-center gap-3">
+      <header className="flex flex-wrap items-center gap-3 rounded-xl border bg-card p-6">
         <span aria-hidden className="size-4 rounded-full" style={{ backgroundColor: team.color }} />
         <h1 className="text-2xl font-bold">{team.name}</h1>
         <Badge variant="secondary">{t(`categories.${team.category}`)}</Badge>
@@ -62,7 +63,8 @@ export function TeamPage() {
         <TabsContent value="attendance">
           <AttendanceGrid teamId={team.id} />
         </TabsContent>
-        <TabsContent value="tasks">
+        <TabsContent value="tasks" className="flex flex-col gap-6">
+          <TaskCatalog teamId={team.id} />
           <TaskBilan teamId={team.id} />
         </TabsContent>
         <TabsContent value="stats">

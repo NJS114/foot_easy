@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient, type TeamCreate } from "@/api/client";
+import { allPages } from "@/api/pagination";
 import { unwrap } from "@/api/errors";
 
 export const teamKeys = {
@@ -11,11 +12,13 @@ export const teamKeys = {
 export function useTeams(clubId: string) {
   return useQuery({
     queryKey: teamKeys.byClub(clubId),
-    queryFn: async () =>
-      unwrap(
-        await apiClient.GET("/api/v1/teams", {
-          params: { query: { club_id: clubId, limit: 100 } },
-        }),
+    queryFn: () =>
+      allPages(async (skip) =>
+        unwrap(
+          await apiClient.GET("/api/v1/teams", {
+            params: { query: { club_id: clubId, skip, limit: 100 } },
+          }),
+        ),
       ),
   });
 }
