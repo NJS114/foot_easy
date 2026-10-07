@@ -77,6 +77,7 @@ export function useUpdateEvent(eventId: string) {
       return Promise.all([
         queryClient.invalidateQueries({ queryKey: ["events", "team"] }),
         queryClient.invalidateQueries({ queryKey: ["stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["workspace"] }),
       ]);
     },
   });

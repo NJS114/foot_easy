@@ -67,7 +67,7 @@ export function MembersPage() {
           <input
             ref={fileRef}
             type="file"
-            accept=".csv,.xlsx"
+            accept=".csv"
             className="hidden"
             aria-label="Fichier des membres"
             onChange={(e) => {
@@ -86,7 +86,7 @@ export function MembersPage() {
             onClick={() => fileRef.current?.click()}
           >
             <Upload />
-            Importer CSV / Excel
+            Importer CSV
           </Button>
           <Button
             variant="outline"
@@ -181,8 +181,8 @@ export function MembersPage() {
                 {members.map((member) => (
                   <tr key={member.id}>
                     <td>
-                      <button
-                        onClick={() => setEditing(member)}
+                      <Link
+                        to={`/members/${member.id}`}
                         className="flex items-center gap-3 text-left"
                       >
                         <span className="member-avatar">
@@ -197,7 +197,7 @@ export function MembersPage() {
                             </span>
                           )}
                         </span>
-                      </button>
+                      </Link>
                     </td>
                     <td>
                       <Badge variant="secondary">{t(`roles.${member.role}`)}</Badge>

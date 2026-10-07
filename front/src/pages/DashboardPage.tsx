@@ -1,3 +1,4 @@
+import { SponsorBanner } from "@/workflows/Sponsors";
 import {
   ArrowRight,
   CalendarDays,
@@ -58,6 +59,7 @@ export function DashboardPage() {
   ];
   return (
     <div className="flex flex-col gap-7">
+      <SponsorBanner surface="dashboard" />
       <header className="page-heading">
         <div>
           <p className="mb-2 text-xs capitalize text-muted-foreground">{date}</p>

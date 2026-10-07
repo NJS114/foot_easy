@@ -1,5 +1,11 @@
 import {
   CalendarDays,
+  ClipboardCheck,
+  Bell,
+  FolderOpen,
+  Settings,
+  BarChart3,
+  Send,
   ChevronRight,
   CircleHelp,
   CreditCard,
@@ -24,9 +30,16 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/calendar", labelKey: "nav.calendar", icon: CalendarDays },
   { to: "/teams", labelKey: "nav.sport", icon: Trophy },
   { to: "/members", labelKey: "nav.members", icon: Users },
-  { to: "/messaging", labelKey: "nav.messaging", icon: MessagesSquare, soon: true },
-  { to: "/payments", labelKey: "nav.payments", icon: CreditCard, soon: true },
-  { to: "/sponsors", labelKey: "nav.sponsors", icon: Megaphone, soon: true },
+  { to: "/messaging", labelKey: "nav.messaging", icon: MessagesSquare },
+  { to: "/payments", labelKey: "nav.payments", icon: CreditCard },
+  { to: "/invitations", labelKey: "Convocations", icon: Bell },
+  { to: "/tasks", labelKey: "Tâches", icon: ClipboardCheck },
+  { to: "/competitions", labelKey: "Championnats", icon: Trophy },
+  { to: "/statistics", labelKey: "Statistiques", icon: BarChart3 },
+  { to: "/documents", labelKey: "Documents", icon: FolderOpen },
+  { to: "/campaigns", labelKey: "Campagnes", icon: Send },
+  { to: "/settings", labelKey: "Réglages", icon: Settings },
+  { to: "/sponsors", labelKey: "nav.sponsors", icon: Megaphone },
 ];
 
 export function AppShell({ club }: { club: Club }) {
@@ -138,6 +151,12 @@ export function AppShell({ club }: { club: Club }) {
           </span>
         </header>
         <main id="main-content" className="app-content">
+          <div className="demo-notice" role="note">
+            <strong>Espace club · Données enregistrées</strong>
+            <span>
+              Emails, SMS et paiements par carte en simulation · Aucun envoi ni débit externe.
+            </span>
+          </div>
           <Outlet />
         </main>
         <footer className="app-footer">

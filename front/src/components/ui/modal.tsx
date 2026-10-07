@@ -6,10 +6,12 @@ export function Modal({
   title,
   onClose,
   children,
+  wide = false,
 }: {
   title: string;
   onClose: () => void;
   children: ReactNode;
+  wide?: boolean;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -26,7 +28,7 @@ export function Modal({
   return (
     <dialog
       ref={ref}
-      className="dialog"
+      className={wide ? "dialog dialog-wide" : "dialog"}
       aria-labelledby={titleId}
       onCancel={onClose}
       onClick={(e) => {

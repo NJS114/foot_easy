@@ -1,3 +1,4 @@
+import { initialState } from "@/server/state";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import type { Club, Event, Formation, Invitation, Member, Team } from "@/api/client";
@@ -88,6 +89,15 @@ export const FORMATIONS: Formation[] = [
 
 /** Every test runs inside an existing club unless it overrides this handler. */
 export const server = setupServer(
+  http.get("*/api/v2/workspace", () =>
+    HttpResponse.json({
+      ...initialState(),
+      files: [],
+      revision: 1,
+      user: { name: "Coach" },
+      serverTime: new Date().toISOString(),
+    }),
+  ),
   http.get(apiUrl("/members"), () => HttpResponse.json(page([]))),
   http.get(apiUrl("/clubs"), () => HttpResponse.json(page([CLUB]))),
 );

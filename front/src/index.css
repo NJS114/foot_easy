@@ -762,3 +762,21 @@ h1 {
     transition: none !important;
   }
 }
+
+.demo-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 1rem;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #b6dcc9;
+  border-radius: 0.65rem;
+  background: #ecf8f1;
+  color: #235c40;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.demo-notice strong {
+  white-space: nowrap;
+}

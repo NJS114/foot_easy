@@ -43,6 +43,7 @@ export function useInviteRoster(eventId: string) {
       Promise.all([
         queryClient.invalidateQueries({ queryKey: invitationKeys.byEvent(eventId) }),
         queryClient.invalidateQueries({ queryKey: ["stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["workspace"] }),
       ]),
   });
 }
@@ -61,6 +62,7 @@ export function useReplyInvitation(eventId: string) {
       Promise.all([
         queryClient.invalidateQueries({ queryKey: invitationKeys.byEvent(eventId) }),
         queryClient.invalidateQueries({ queryKey: ["stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["workspace"] }),
       ]),
   });
 }
@@ -76,6 +78,7 @@ export function useRemindPending(eventId: string) {
       Promise.all([
         queryClient.invalidateQueries({ queryKey: invitationKeys.byEvent(eventId) }),
         queryClient.invalidateQueries({ queryKey: ["stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["workspace"] }),
       ]),
   });
 }
@@ -100,6 +103,7 @@ export function useRecordAttendance(eventId: string) {
       Promise.all([
         qc.invalidateQueries({ queryKey: invitationKeys.byEvent(eventId) }),
         qc.invalidateQueries({ queryKey: ["stats"] }),
+        qc.invalidateQueries({ queryKey: ["workspace"] }),
       ]),
   });
 }

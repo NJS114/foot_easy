@@ -44,6 +44,9 @@ export function useSaveLineup(eventId: string) {
           body,
         }),
       ),
-    onSuccess: (lineup) => queryClient.setQueryData(lineupKeys.byEvent(eventId), lineup),
+    onSuccess: (lineup) => {
+      queryClient.setQueryData(lineupKeys.byEvent(eventId), lineup);
+      return queryClient.invalidateQueries({ queryKey: ["workspace"] });
+    },
   });
 }

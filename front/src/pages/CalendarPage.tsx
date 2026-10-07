@@ -1,3 +1,4 @@
+import { SponsorBanner } from "@/workflows/Sponsors";
 import { CalendarDays, ChevronLeft, ChevronRight, Download, List, Plus } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -45,6 +46,7 @@ export function CalendarPage() {
   }
   return (
     <div className="flex flex-col gap-6">
+      <SponsorBanner surface="calendar" />
       <header className="page-heading">
         <div>
           <h1>{t("calendar.title")}</h1>

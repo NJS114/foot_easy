@@ -30,13 +30,13 @@ describe("Club space", () => {
     expect(sent?.name).toBe("US Quartier");
   });
 
-  it("shows the seven club modules in the navigation", async () => {
+  it("shows the sporting and administrative modules in the navigation", async () => {
     server.use(http.get(apiUrl("/teams"), () => HttpResponse.json(page([]))));
 
     renderRoute("/");
 
     const nav = await screen.findByRole("navigation", { name: "Navigation du club" });
-    expect(nav.querySelectorAll("a")).toHaveLength(7);
+    expect(nav.querySelectorAll("a")).toHaveLength(14);
   });
 
   it("filters the club calendar by event type", async () => {
@@ -54,11 +54,15 @@ describe("Club space", () => {
     expect(screen.getByText("Championnat J1")).toBeInTheDocument();
   });
 
-  it("shows a coming-soon page for modules not built yet", async () => {
+  it("opens the payment workflow and its collection editor", async () => {
     server.use(http.get(apiUrl("/teams"), () => HttpResponse.json(page([]))));
 
     renderRoute("/payments");
 
-    expect(await screen.findByText("Module en préparation")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Paiements & cotisations" }),
+    ).toBeInTheDocument();
+    await userEvent.setup().click(screen.getByRole("button", { name: "Créer une collecte" }));
+    expect(screen.getByRole("dialog")).toHaveTextContent("Nouvelle collecte");
   });
 });

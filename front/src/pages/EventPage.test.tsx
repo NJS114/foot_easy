@@ -55,6 +55,9 @@ describe("EventPage", () => {
     renderRoute(`/events/${MATCH.id}`);
 
     await userEvent.click(await screen.findByRole("button", { name: "Convoquer tout l'effectif" }));
+    await userEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", { name: "Confirmer" }),
+    );
 
     expect(await screen.findByText("Zinedine Zidane")).toBeInTheDocument();
     expect(screen.getByText("Sans réponse")).toBeInTheDocument();
@@ -71,6 +74,9 @@ describe("EventPage", () => {
 
     await userEvent.click(
       await screen.findByRole("button", { name: "Relancer les non-répondants" }),
+    );
+    await userEvent.click(
+      within(screen.getByRole("dialog")).getByRole("button", { name: "Confirmer" }),
     );
 
     expect(await screen.findByText("1 membre(s) relancé(s)")).toBeInTheDocument();

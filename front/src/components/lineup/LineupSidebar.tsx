@@ -91,6 +91,12 @@ export function LineupSaveBar(props: SaveBarProps) {
         />
         {t("lineup.publish")}
       </label>
+      {props.isPublished && (
+        <p className="text-sm text-muted-foreground">
+          L’enregistrement partage la composition avec les titulaires et remplaçants par email
+          simulé. Retrouvez les statuts dans le suivi des envois.
+        </p>
+      )}
       <FormError error={props.error} />
       {props.saved && (
         <p role="status" className="text-sm text-primary">

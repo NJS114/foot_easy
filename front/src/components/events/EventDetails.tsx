@@ -92,7 +92,8 @@ export function EventDetails({ event }: { event: Event }) {
         <Modal title="Annuler cet événement ?" onClose={() => setCancelling(false)}>
           <p className="mb-5 text-sm leading-relaxed">
             L’événement restera visible dans le calendrier avec la mention « Annulé ». Vous pourrez
-            le rétablir à tout moment.
+            le rétablir à tout moment. Une notification d’annulation simulée sera créée pour les
+            membres convoqués, avec son suivi dans Campagnes & envois.
           </p>
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setCancelling(false)}>

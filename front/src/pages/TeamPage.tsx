@@ -12,6 +12,8 @@ import { TaskCatalog } from "@/components/tasks/TaskCatalog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DocumentPanel } from "@/workflows/Documents";
+import { Workspace } from "@/workflows/ui";
 import { useTeam } from "@/hooks/useTeams";
 
 export function TeamPage() {
@@ -36,6 +38,7 @@ export function TeamPage() {
           <TabsTrigger value="roster">{t("teams.tabs.roster")}</TabsTrigger>
           <TabsTrigger value="attendance">{t("teams.tabs.attendance")}</TabsTrigger>
           <TabsTrigger value="tasks">{t("teams.tabs.tasks")}</TabsTrigger>
+          <TabsTrigger value="documents">Documents</TabsTrigger>
           <TabsTrigger value="stats">{t("teams.tabs.stats")}</TabsTrigger>
         </TabsList>
         <TabsContent value="events" className="grid gap-6 xl:grid-cols-[1fr_24rem]">
@@ -66,6 +69,11 @@ export function TeamPage() {
         <TabsContent value="tasks" className="flex flex-col gap-6">
           <TaskCatalog teamId={team.id} />
           <TaskBilan teamId={team.id} />
+        </TabsContent>
+        <TabsContent value="documents">
+          <Workspace>
+            {(data) => <DocumentPanel data={data} entityType="team" entityId={team.id} />}
+          </Workspace>
         </TabsContent>
         <TabsContent value="stats">
           <TeamStatsView teamId={team.id} />
