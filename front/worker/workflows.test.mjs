@@ -59,6 +59,113 @@ function draft(state, overrides = {}) {
     ...overrides,
   };
 }
+it("organizes folders without cycles, duplicate siblings or removal of nonempty folders", async () => {
+  const root = await okay("folder.save", { name: "Saison 2026", parentId: "" });
+  const child = await okay("folder.save", { name: "Licences", parentId: root });
+  expect((await action("folder.save", { name: "licences", parentId: root })).status).toBe(422);
+  expect((await action("folder.save", { id: root, name: "Saison", parentId: child })).status).toBe(
+    422,
+  );
+  expect((await action("folder.delete", { id: root })).status).toBe(422);
+  expect((await action("folder.save", { name: "../Autre", parentId: "" })).status).toBe(422);
+  expect(
+    (await action("folder.save", { name: "Autre", parentId: root }, { owner: "other" })).status,
+  ).toBe(404);
+  const file = await (await upload("document", "", { folderId: child })).json();
+  expect((await action("folder.delete", { id: child })).status).toBe(422);
+  await call(file.url, "PATCH", { folderId: "" });
+  await okay("folder.delete", { id: child });
+  await okay("folder.delete", { id: root });
+  expect((await view()).flow.folders).toHaveLength(0);
+});
+it("preserves file provenance, recipients and event associations when classifying and versioning", async () => {
+  const data = await view(),
+    member = data.core.members[0],
+    event = data.core.events[0];
+  const folder = await okay("folder.save", { name: "Convocations", parentId: "" });
+  const id = crypto.randomUUID(),
+    options = {
+      id,
+      folderId: folder,
+      submittedByMemberId: member.id,
+      recipientMemberIds: [member.id],
+    };
+  const response = await upload("event", event.id, options);
+  expect(response.status).toBe(201);
+  const file = await response.json();
+  expect(file).toMatchObject({
+    folderId: folder,
+    uploadedBy: "Coach",
+    submittedByMemberId: member.id,
+    recipientMemberIds: [member.id],
+    entityType: "event",
+    entityId: event.id,
+  });
+  expect((await upload("event", event.id, options)).status).toBe(200);
+  expect((await upload("event", event.id, { ...options, folderId: "" })).status).toBe(409);
+  const next = await (await upload("event", event.id, { replacesId: file.id })).json();
+  expect(next).toMatchObject({
+    folderId: folder,
+    submittedByMemberId: member.id,
+    recipientMemberIds: [member.id],
+    rootId: file.id,
+    version: 2,
+  });
+  const moved = await (await call(next.url, "PATCH", { folderId: "" })).json();
+  expect(moved).toMatchObject({
+    folderId: "",
+    entityId: event.id,
+    submittedByMemberId: member.id,
+    uploadedBy: "Coach",
+  });
+  expect((await call(file.url, "PATCH", { recipientMemberIds: ["unknown"] })).status).toBe(422);
+  expect((await upload("document", "", { folderId: folder, owner: "other" })).status).toBe(404);
+  expect((await upload("document", "", { submittedByMemberId: "unknown" })).status).toBe(404);
+});
+it("includes the latest active event documents in new invitations and pending-only reminders", async () => {
+  const data = await view(),
+    event = data.core.events.find((e) => !e.is_cancelled);
+  const first = await (await upload("event", event.id)).json();
+  const latest = await (await upload("event", event.id, { replacesId: first.id })).json();
+  const rejected = await (await upload("event", event.id)).json();
+  await call(rejected.url, "PATCH", { status: "rejected", note: "Illisible" });
+  const response = await call("/api/v1/invitations", "POST", { event_id: event.id });
+  expect(response.status).toBe(201);
+  const invited = await response.json();
+  if (invited.length) expect((await view()).flow.campaigns[0].attachmentIds).toEqual([latest.id]);
+  const pending = (await view()).core.invitations.filter(
+    (i) => i.event_id === event.id && i.availability === "pending",
+  );
+  expect(pending.length).toBeGreaterThan(0);
+  await call(`/api/v1/invitations/${pending[0].id}`, "PATCH", { availability: "available" });
+  expect((await call("/api/v1/invitations/reminders", "POST", { event_id: event.id })).status).toBe(
+    200,
+  );
+  const campaign = (await view()).flow.campaigns[0];
+  expect(campaign.attachmentIds).toEqual([latest.id]);
+  expect(campaign.memberIds).not.toContain(pending[0].member.id);
+  expect(campaign.kind).toBe("reminder");
+});
+it("tracks simulated licence reminders with idempotency, missing contacts and member audit", async () => {
+  const data = await view(),
+    member = data.core.members[0],
+    id = crypto.randomUUID();
+  await call(`/api/v1/members/${member.id}`, "PATCH", { email: null });
+  const campaignId = await okay("license.remind", { id: member.id }, { id });
+  expect(await okay("license.remind", { id: member.id }, { id })).toBe(campaignId);
+  const next = await view();
+  expect(next.flow.campaigns.find((c) => c.id === campaignId)).toMatchObject({
+    kind: "reminder",
+    memberIds: [member.id],
+  });
+  expect(next.flow.deliveries.find((d) => d.campaignId === campaignId)).toMatchObject({
+    memberId: member.id,
+    status: "excluded",
+  });
+  expect(
+    next.flow.audit.some((a) => a.entityId === member.id && a.action === "license_reminder"),
+  ).toBe(true);
+});
 it("authenticates API access and rejects cross-site mutations", async () => {
   expect((await call(undefined, "GET", undefined, { anonymous: true })).status).toBe(401);
   expect(
@@ -233,6 +340,10 @@ async function upload(entityType = "document", entityId = "", options = {}) {
   form.append("entityType", entityType);
   form.append("entityId", entityId);
   if (options.replacesId) form.append("replacesId", options.replacesId);
+  for (const key of ["category", "folderId", "submittedByMemberId"])
+    if (key in options) form.append(key, options[key]);
+  if ("recipientMemberIds" in options)
+    form.append("recipientMemberIds", JSON.stringify(options.recipientMemberIds));
   return call("/api/v2/files", "POST", form, options);
 }
 it("uploads real bytes, protects ownership, versions files, and rejects unsafe formats", async () => {

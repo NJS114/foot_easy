@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { EventDetails } from "@/components/events/EventDetails";
 import { InvitationsPanel } from "@/components/invitations/InvitationsPanel";
 import { LineupEditor } from "@/components/lineup/LineupEditor";
@@ -17,7 +17,23 @@ import { useEvent } from "@/hooks/useEvents";
 export function EventPage() {
   const { t } = useTranslation();
   const { eventId = "" } = useParams();
-  const [tab, setTab] = useState("invitations");
+  const [params, setParams] = useSearchParams();
+  const initialTab = params.get("tab") || "invitations";
+  const [tab, updateTab] = useState(
+    ["invitations", "documents", "tasks", "lineup", "match"].includes(initialTab)
+      ? initialTab
+      : "invitations",
+  );
+  const setTab = (value: string) => {
+    updateTab(value);
+    setParams(
+      (previous) => {
+        previous.set("tab", value);
+        return previous;
+      },
+      { replace: true },
+    );
+  };
   const { data: event, isLoading, error } = useEvent(eventId);
 
   if (isLoading) return <LoadingState />;

@@ -1,8 +1,10 @@
+import { useRemindPending } from "@/hooks/useInvitations";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Download, Mail, ShieldCheck, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  ConfirmButton,
   Page,
   Panel,
   Workspace,
@@ -226,6 +228,23 @@ function Invitations({ data }: { data: WorkspaceView }) {
                         <Link className="flow-button secondary" to={`/events/${event.id}`}>
                           Gérer les convocations
                         </Link>
+                        <Link className="flow-link" to={`/events/${event.id}?tab=documents`}>
+                          {
+                            data.files.filter(
+                              (f) =>
+                                f.entityType === "event" &&
+                                f.entityId === event.id &&
+                                f.status !== "archived",
+                            ).length
+                          }{" "}
+                          document(s) liés
+                        </Link>
+                        {!event.is_cancelled && (
+                          <InvitationReminder
+                            eventId={event.id}
+                            count={inv.filter((i) => i.availability === "pending").length}
+                          />
+                        )}
                       </td>
                     </tr>
                   );
@@ -411,5 +430,28 @@ function Statistics({ data }: { data: WorkspaceView }) {
         </Panel>
       </div>
     </Page>
+  );
+}
+
+function InvitationReminder({ eventId, count }: { eventId: string; count: number }) {
+  const reminder = useRemindPending(eventId);
+  if (!count) return <small>Toutes les disponibilités sont renseignées.</small>;
+  return (
+    <div>
+      <ConfirmButton
+        label={`Relancer ${count} sans réponse`}
+        title="Relancer les membres sans réponse ?"
+        pending={reminder.isPending}
+        onConfirm={async () => {
+          await reminder.mutateAsync();
+        }}
+      >
+        Seuls les membres en attente seront relancés. Les documents actifs de l’événement seront
+        joints. L’envoi est simulé et suivi dans le centre des envois.
+      </ConfirmButton>
+      <Feedback
+        success={reminder.isSuccess ? "Relance lancée. Consultez le suivi des envois." : undefined}
+      />
+    </div>
   );
 }

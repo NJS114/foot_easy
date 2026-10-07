@@ -30,8 +30,13 @@ export type Audit = {
   action: string;
   detail: string;
 };
+export type DocumentFolder = { id: string; name: string; parentId: string; createdAt: string };
 export type FileRecord = {
   id: string;
+  folderId?: string;
+  uploadedBy?: string;
+  submittedByMemberId?: string;
+  recipientMemberIds?: string[];
   rootId: string;
   version: number;
   name: string;
@@ -238,6 +243,7 @@ export type Competition = {
 };
 export type FlowState = {
   schemaVersion: 1;
+  folders: DocumentFolder[];
   campaigns: Campaign[];
   deliveries: Delivery[];
   conversations: Conversation[];

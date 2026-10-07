@@ -53,7 +53,11 @@ export function useCreateMember() {
   return useMutation({
     mutationFn: async (body: MemberCreate) =>
       unwrap(await apiClient.POST("/api/v1/members", { body })),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["members"] }),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: ["members"] }),
+        qc.invalidateQueries({ queryKey: ["workspace"] }),
+      ]),
   });
 }
 export function useUpdateMember(memberId: string) {
@@ -69,6 +73,7 @@ export function useUpdateMember(memberId: string) {
     onSuccess: () =>
       Promise.all([
         qc.invalidateQueries({ queryKey: ["members"] }),
+        qc.invalidateQueries({ queryKey: ["workspace"] }),
         qc.invalidateQueries({ queryKey: ["invitations"] }),
         qc.invalidateQueries({ queryKey: ["stats"] }),
       ]),
@@ -86,6 +91,7 @@ export function useDeleteMember() {
     onSuccess: () =>
       Promise.all([
         qc.invalidateQueries({ queryKey: ["members"] }),
+        qc.invalidateQueries({ queryKey: ["workspace"] }),
         qc.invalidateQueries({ queryKey: ["stats"] }),
         qc.invalidateQueries({ queryKey: ["invitations"] }),
       ]),

@@ -86,6 +86,11 @@ it("renders every new module and detail route from server state", async () => {
     ["/sponsors/sponsor-cycle", "Atelier du Cycle"],
     ["/tasks", "Tâches & responsabilités"],
     ["/documents", "Documents & médias"],
+    ["/users", "Utilisateurs"],
+    [
+      "/users/" + state.core.members[0].id,
+      state.core.members[0].first_name + " " + state.core.members[0].last_name,
+    ],
     [
       "/members/" + state.core.members[0].id,
       state.core.members[0].first_name + " " + state.core.members[0].last_name,
@@ -167,4 +172,48 @@ it("publishes a message in the selected discussion", async () => {
     await screen.findByText("Rendez-vous au stade à 14 h.", { selector: "p" }),
   ).toBeInTheDocument();
   expect(state.flow.conversations[0].messages).toHaveLength(2);
+});
+it("creates nested folders and opens their breadcrumbs", async () => {
+  open("/documents");
+  const user = userEvent.setup();
+  await user.click(await screen.findByRole("button", { name: "Nouveau dossier" }));
+  await user.type(screen.getByLabelText(/Nom du dossier/), "Saison 2026");
+  await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Enregistrer" }));
+  await screen.findByRole("button", { name: "Nouveau sous-dossier" });
+  await user.click(screen.getByRole("button", { name: "Nouveau sous-dossier" }));
+  await user.type(screen.getByLabelText(/Nom du dossier/), "Licences");
+  await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Enregistrer" }));
+  await waitFor(() => expect(state.flow.folders).toHaveLength(2));
+  expect(state.flow.folders[1].parentId).toBe(state.flow.folders[0].id);
+  await screen.findByRole("navigation", { name: "Chemin du dossier" });
+  expect(screen.getByRole("navigation", { name: "Chemin du dossier" })).toHaveTextContent(
+    "Saison 2026Licences",
+  );
+});
+it("adds a member from the users page and refreshes the filtered directory", async () => {
+  open("/users");
+  const user = userEvent.setup();
+  await user.click(await screen.findByRole("button", { name: "Ajouter un membre" }));
+  const dialog = screen.getByRole("dialog");
+  await user.type(within(dialog).getByLabelText(/Prénom/), "Zoé");
+  await user.type(within(dialog).getByLabelText(/^Nom/), "Martin");
+  await user.click(within(dialog).getByRole("button", { name: /Ajouter/ }));
+  await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  await user.type(screen.getByPlaceholderText("Nom, email ou numéro de licence"), "Zoé Martin");
+  expect(await screen.findByRole("link", { name: "Zoé Martin" })).toBeInTheDocument();
+});
+it("opens a member's task filter and tracks a confirmed licence reminder", async () => {
+  const member = state.core.members[0];
+  const router = open(`/tasks?memberId=${member.id}`);
+  const user = userEvent.setup();
+  await waitFor(() => expect(screen.getByLabelText("Membre responsable")).toHaveValue(member.id));
+  await act(async () => {
+    await router.navigate(`/users/${member.id}`);
+  });
+  await user.click(await screen.findByRole("button", { name: "Relancer la licence" }));
+  await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Confirmer" }));
+  expect(
+    await screen.findByRole("link", { name: "Voir le suivi de cette relance" }),
+  ).toBeInTheDocument();
+  expect(state.flow.campaigns[0]).toMatchObject({ kind: "reminder", memberIds: [member.id] });
 });

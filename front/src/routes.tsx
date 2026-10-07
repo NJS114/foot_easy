@@ -5,6 +5,7 @@ import { MessagingPage } from "@/workflows/Messaging";
 import { CampaignsPage, CampaignDetailPage } from "@/workflows/Campaigns";
 import { PaymentsPage, PaymentDetailPage } from "@/workflows/Payments";
 import { SponsorsPage, SponsorDetailPage } from "@/workflows/Sponsors";
+import { UsersPage } from "@/workflows/Users";
 import { TasksPage } from "@/workflows/Tasks";
 import { CompetitionsPage, CompetitionDetailPage } from "@/workflows/Competitions";
 import { DocumentsPage, MemberDossierPage } from "@/workflows/Documents";
@@ -24,6 +25,8 @@ export const ROUTES: RouteObject[] = [
       { path: "/teams", element: <TeamsPage /> },
       { path: "/teams/:teamId", element: <TeamPage /> },
       { path: "/events/:eventId", element: <EventPage /> },
+      { path: "/users", element: <UsersPage /> },
+      { path: "/users/:memberId", element: <MemberDossierPage /> },
       { path: "/members", element: <MembersPage /> },
       { path: "/members/:memberId", element: <MemberDossierPage /> },
       { path: "/campaigns", element: <CampaignsPage /> },

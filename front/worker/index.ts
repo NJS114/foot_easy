@@ -2,7 +2,7 @@ import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
 import { createCoreAPI } from "../src/server/core-api";
 import { applyAction, syncCoreTasks } from "../src/workflows/engine";
 import { audit, iso, tick, uid, WorkflowError } from "../src/workflows/domain";
-import type { Campaign, WorkspaceState } from "../src/workflows/types";
+import type { Campaign, FileRecord, WorkspaceState } from "../src/workflows/types";
 import { listFiles, loadWorkspace, persist } from "./storage";
 import { notifyCoreChange } from "../src/workflows/notifications";
 
@@ -127,6 +127,32 @@ function entityExists(state: WorkspaceState, type: string, id: string) {
   if (!lists[type]?.some((x) => x.id === id))
     throw new WorkflowError("Le dossier de destination n’existe pas.", 404);
 }
+
+function fileOrganization(
+  state: WorkspaceState,
+  p: Record<string, unknown>,
+  previous?: FileRecord,
+) {
+  const folderId = p.folderId === undefined ? previous?.folderId || "" : String(p.folderId);
+  if (folderId && !state.flow.folders.some((f) => f.id === folderId))
+    throw new WorkflowError("Dossier introuvable.", 404);
+  const submittedByMemberId =
+    p.submittedByMemberId === undefined
+      ? previous?.submittedByMemberId || ""
+      : String(p.submittedByMemberId);
+  if (submittedByMemberId && !state.core.members.some((m) => m.id === submittedByMemberId))
+    throw new WorkflowError("Membre déposant introuvable.", 404);
+  const ids =
+    p.recipientMemberIds === undefined ? previous?.recipientMemberIds || [] : p.recipientMemberIds;
+  if (
+    !Array.isArray(ids) ||
+    ids.length > 1000 ||
+    ids.some((id) => typeof id !== "string" || !state.core.members.some((m) => m.id === id))
+  )
+    throw new WorkflowError("Destinataires du document invalides.");
+  return { folderId, submittedByMemberId, recipientMemberIds: [...new Set(ids as string[])] };
+}
+
 async function fileRoutes(
   request: Request,
   env: Env,
@@ -193,6 +219,28 @@ async function fileRoutes(
         .first<{ version: number }>();
       version = (last?.version || 0) + 1;
     }
+    const previousFile = replacesId
+      ? (await listFiles(env.DB, owner)).find((f) => f.id === replacesId)
+      : undefined;
+    let recipientMemberIds: unknown;
+    if (form.has("recipientMemberIds")) {
+      try {
+        recipientMemberIds = JSON.parse(String(form.get("recipientMemberIds")));
+      } catch {
+        throw new WorkflowError("Destinataires invalides.");
+      }
+    }
+    const organization = fileOrganization(
+      state,
+      {
+        ...(form.has("folderId") ? { folderId: form.get("folderId") } : {}),
+        ...(form.has("submittedByMemberId")
+          ? { submittedByMemberId: form.get("submittedByMemberId") }
+          : {}),
+        ...(recipientMemberIds !== undefined ? { recipientMemberIds } : {}),
+      },
+      previousFile,
+    );
     const id = request.headers.get("x-request-id") || uid();
     if (!/^[a-zA-Z0-9-]{10,100}$/.test(id))
       throw new WorkflowError("Identifiant de requête invalide.", 400);
@@ -207,6 +255,7 @@ async function fileRoutes(
       entityId,
       category,
       replacesId,
+      organization,
     ]);
     const previousUpload = await env.DB.prepare(
       "SELECT upload_hash FROM files WHERE id=? AND owner_id=?",
@@ -222,7 +271,7 @@ async function fileRoutes(
     await env.BUCKET.put(key, content, { httpMetadata: { contentType: mime } });
     try {
       await env.DB.prepare(
-        "INSERT INTO files (id,owner_id,object_key,upload_hash,root_id,version,name,mime,size,entity_type,entity_id,category,status,expires_at,note,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'pending',NULL,'',?)",
+        "INSERT INTO files (id,owner_id,object_key,upload_hash,root_id,version,name,mime,size,entity_type,entity_id,category,status,expires_at,note,created_at,folder_id,uploaded_by,submitted_by_member_id,recipient_member_ids) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,'pending',NULL,'',?,?,?,?,?)",
       )
         .bind(
           id,
@@ -238,6 +287,10 @@ async function fileRoutes(
           entityId,
           category,
           iso(),
+          organization.folderId,
+          actor(request),
+          organization.submittedByMemberId,
+          JSON.stringify(organization.recipientMemberIds),
         )
         .run();
     } catch (error) {
@@ -259,7 +312,7 @@ async function fileRoutes(
     );
   }
   if (request.method === "PATCH" && fileId) {
-    const p = parse(await limitedBody(request, 10000));
+    const p = parse(await limitedBody(request, 100000));
     const files = await listFiles(env.DB, owner);
     const file = files.find((f) => f.id === fileId);
     if (!file) throw new WorkflowError("Document introuvable.", 404);
@@ -268,7 +321,9 @@ async function fileRoutes(
       throw new WorkflowError("Statut invalide.");
     const entityType = p.entityType === undefined ? file.entityType : String(p.entityType),
       entityId = p.entityId === undefined ? file.entityId : String(p.entityId);
-    entityExists((await loadWorkspace(env.DB, owner)).state, entityType, entityId);
+    const { state } = await loadWorkspace(env.DB, owner);
+    entityExists(state, entityType, entityId);
+    const organization = fileOrganization(state, p, file);
     const expiresAt =
       p.expiresAt === undefined ? file.expiresAt : p.expiresAt ? String(p.expiresAt) : null;
     if (expiresAt && !/^\d{4}-\d{2}-\d{2}$/.test(expiresAt))
@@ -277,7 +332,7 @@ async function fileRoutes(
     if (status === "rejected" && !note.trim())
       throw new WorkflowError("Précisez le motif du refus.");
     await env.DB.prepare(
-      "UPDATE files SET status=?,entity_type=?,entity_id=?,category=?,expires_at=?,note=? WHERE id=? AND owner_id=?",
+      "UPDATE files SET status=?,entity_type=?,entity_id=?,category=?,expires_at=?,note=?,folder_id=?,submitted_by_member_id=?,recipient_member_ids=? WHERE id=? AND owner_id=?",
     )
       .bind(
         status,
@@ -286,6 +341,9 @@ async function fileRoutes(
         String(p.category ?? file.category).slice(0, 80),
         expiresAt,
         note,
+        organization.folderId,
+        organization.submittedByMemberId,
+        JSON.stringify(organization.recipientMemberIds),
         fileId,
         owner,
       )
@@ -300,6 +358,7 @@ function invitationCampaign(
   onlyPending: boolean,
   now: string,
   newMemberIds?: string[],
+  files: FileRecord[] = [],
 ) {
   const event = state.core.events.find((e) => e.id === eventId);
   if (!event) return;
@@ -320,7 +379,16 @@ function invitationCampaign(
     subject: event.title,
     body: `Bonjour {{prenom}},\n\nVous êtes attendu pour ${event.title}. Retrouvez les informations pratiques dans votre espace club et indiquez votre disponibilité.`,
     memberIds: ids,
-    attachmentIds: [],
+    attachmentIds: files
+      .filter(
+        (f) =>
+          f.entityType === "event" &&
+          f.entityId === eventId &&
+          !["archived", "rejected"].includes(f.status) &&
+          !files.some((other) => other.rootId === f.rootId && other.version > f.version),
+      )
+      .slice(0, 12)
+      .map((f) => f.id),
     status: "draft",
     scheduledAt: null,
     startedAt: null,
@@ -495,6 +563,7 @@ async function fetchApi(request: Request, env: Env, owner: string) {
             path.endsWith("reminders"),
             now,
             newMemberIds,
+            await listFiles(env.DB, owner),
           );
         }
         audit(

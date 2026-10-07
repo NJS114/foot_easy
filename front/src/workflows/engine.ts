@@ -122,7 +122,83 @@ export function applyAction(
 ): { entityId: string; message: string } {
   const { core, flow } = state;
   const entityId = text(p, "id", 200);
+  flow.folders ??= [];
   switch (type) {
+    case "folder.save": {
+      const existing = entityId ? get(flow.folders, entityId) : null;
+      const name = text(p, "name", 120, true);
+      if (/[/\\]/.test(name) || [".", ".."].includes(name))
+        throw new WorkflowError("Le nom du dossier ne peut pas contenir de séparateur.");
+      const parentId = text(p, "parentId", 200);
+      if (parentId) get(flow.folders, parentId);
+      let ancestor = parentId;
+      while (ancestor) {
+        if (ancestor === entityId)
+          throw new WorkflowError(
+            "Un dossier ne peut pas être déplacé dans lui-même ou ses sous-dossiers.",
+          );
+        ancestor = get(flow.folders, ancestor).parentId;
+      }
+      if (
+        flow.folders.some(
+          (f) =>
+            f.id !== entityId &&
+            f.parentId === parentId &&
+            f.name.toLocaleLowerCase("fr") === name.toLocaleLowerCase("fr"),
+        )
+      )
+        throw new WorkflowError("Un dossier de ce nom existe déjà ici.");
+      const folder = {
+        id: existing?.id || uid(),
+        name,
+        parentId,
+        createdAt: existing?.createdAt || now,
+      };
+      if (existing) Object.assign(existing, folder);
+      else flow.folders.push(folder);
+      return entityAudit(state, actor, type, folder.id, "Dossier enregistré");
+    }
+    case "folder.delete": {
+      get(flow.folders, entityId);
+      if (
+        flow.folders.some((f) => f.parentId === entityId) ||
+        files.some((f) => f.folderId === entityId)
+      )
+        throw new WorkflowError(
+          "Déplacez les fichiers et sous-dossiers avant de supprimer ce dossier.",
+        );
+      flow.folders = flow.folders.filter((f) => f.id !== entityId);
+      return entityAudit(state, actor, type, entityId, "Dossier vide supprimé");
+    }
+    case "license.remind": {
+      const member = get(core.members, entityId);
+      notify(
+        state,
+        {
+          subject: "Licence à compléter",
+          body: "Merci de transmettre votre licence à jour et de compléter votre numéro de licence auprès du gestionnaire du club.",
+          memberIds: [member.id],
+        },
+        actor,
+        now,
+      );
+      const campaign = flow.campaigns[0];
+      campaign.kind = "reminder";
+      audit(
+        state,
+        actor,
+        "member",
+        member.id,
+        "license_reminder",
+        "Relance de licence — simulation",
+        now,
+      );
+      return {
+        entityId: campaign.id,
+        message: "Relance de licence lancée en simulation. Consultez le suivi des envois.",
+      };
+    }
+
     case "campaign.save": {
       const existing = entityId ? get(flow.campaigns, entityId) : null;
       if (existing) assertCampaignEditable(existing);
@@ -1097,6 +1173,7 @@ export function syncCoreTasks(state: WorkspaceState) {
 export function blankFlow(): FlowState {
   return {
     schemaVersion: 1,
+    folders: [],
     campaigns: [],
     deliveries: [],
     conversations: [],

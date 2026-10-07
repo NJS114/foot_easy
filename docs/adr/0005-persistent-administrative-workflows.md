@@ -28,8 +28,10 @@ en publication et d’un compte de développement dans l’adaptateur local.
   prestataires et un ordonnanceur pour envoyer sans visite de l’application.
 - Le Site est privé. Une conversation enregistrée et son ciblage ne créent pas de comptes
   membres ou parents et ne constituent pas une messagerie partagée entre comptes.
-- Les migrations conservées sont immuables. Aucun nouveau schéma n’est nécessaire pour
-  les notifications automatiques ajoutées à cette reprise.
+- Les migrations conservées sont immuables. La migration additive `0003` conserve les fichiers
+  existants et ajoute leur dossier, gestionnaire déposant, membre déposant déclaré et destinataires.
+  Les dossiers et sous-dossiers sont conservés dans l’instantané du club et restent indépendants
+  du rattachement à un membre, événement ou tâche.
 
 ## Vérification
 

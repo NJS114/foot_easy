@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Plus, CalendarClock, CheckSquare, Paperclip, MessageCircle, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -42,15 +42,18 @@ export function EventTasksPanel({ eventId }: { eventId: string }) {
   return <Workspace>{(data) => <TaskBoard data={data} eventId={eventId} />}</Workspace>;
 }
 export function TaskBoard({ data, eventId }: { data: WorkspaceView; eventId?: string }) {
+  const [params] = useSearchParams();
+  const [member, setMember] = useState(params.get("memberId") || "");
   const [team, setTeam] = useState(""),
     [search, setSearch] = useState(""),
     [late, setLate] = useState(false),
-    [selected, setSelected] = useState<string | null>(null),
+    [selected, setSelected] = useState<string | null>(params.get("taskId")),
     [edit, setEdit] = useState<WorkTask | null | undefined>(undefined),
     [archived, setArchived] = useState(false);
   const tasks = data.flow.workTasks.filter(
     (t) =>
       (!eventId || t.eventId === eventId) &&
+      (!member || t.memberId === member) &&
       (!team || t.teamId === team) &&
       t.title.toLowerCase().includes(search.toLowerCase()) &&
       (!late ||
@@ -89,6 +92,18 @@ export function TaskBoard({ data, eventId }: { data: WorkspaceView; eventId?: st
             ))}
           </Select>
         )}
+        <Select
+          label="Membre responsable"
+          value={member}
+          onChange={(e) => setMember(e.target.value)}
+        >
+          <option value="">Tous les membres</option>
+          {data.core.members.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.first_name} {m.last_name}
+            </option>
+          ))}
+        </Select>
         <Checkbox label="En retard" checked={late} onChange={(e) => setLate(e.target.checked)} />
         <Checkbox
           label="Inclure les annulées"
@@ -189,6 +204,7 @@ export function TaskBoard({ data, eventId }: { data: WorkspaceView; eventId?: st
           data={data}
           task={edit || undefined}
           eventId={eventId}
+          memberId={member}
           onClose={() => setEdit(undefined)}
           onSaved={(id) => setSelected(id)}
         />
@@ -200,18 +216,25 @@ function TaskEditor({
   data,
   task,
   eventId,
+  memberId,
   onClose,
   onSaved,
 }: {
   data: WorkspaceView;
   task?: WorkTask;
   eventId?: string;
+  memberId?: string;
   onClose: () => void;
   onSaved: (id: string) => void;
 }) {
   const action = useAction();
   const selectedEvent = data.core.events.find((e) => e.id === (eventId || task?.eventId));
-  const [team, setTeam] = useState(task?.teamId || selectedEvent?.team_id || data.core.teams[0].id),
+  const [team, setTeam] = useState(
+      task?.teamId ||
+        selectedEvent?.team_id ||
+        data.core.members.find((m) => m.id === memberId)?.team_id ||
+        data.core.teams[0].id,
+    ),
     [event, setEvent] = useState(task?.eventId || eventId || ""),
     [files, setFiles] = useState(task?.attachmentIds || []);
   return (
@@ -280,7 +303,11 @@ function TaskEditor({
                 </option>
               ))}
           </Select>
-          <Select label="Responsable" name="memberId" defaultValue={task?.memberId || ""}>
+          <Select
+            label="Responsable"
+            name="memberId"
+            defaultValue={task?.memberId || memberId || ""}
+          >
             <option value="">À attribuer</option>
             {data.core.members
               .filter((m) => m.team_id === team)

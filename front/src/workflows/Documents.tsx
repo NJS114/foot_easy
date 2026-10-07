@@ -6,6 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { MemberCreateForm } from "@/components/members/MemberCreateForm";
 import type { FileRecord, WorkspaceView } from "./types";
+import { DocumentLibrary } from "./DocumentLibrary";
+import { FolderOptions } from "./DocumentFolders";
+import { DocumentDownload } from "./DocumentDownload";
+import { latestFiles, memberFiles, licenseStatus, folderPath } from "./document-utils";
+import { LicenseReminder } from "./Users";
 import { api, useFileUpdate, workspaceKey, useAction, datetime, shortDate } from "./client";
 import {
   Workspace,
@@ -21,6 +26,7 @@ import {
   SearchBox,
   Status,
   Metrics,
+  person,
   AuditTrail,
   formValues,
 } from "./ui";
@@ -40,6 +46,7 @@ const categories: Record<string, string> = {
 type UploadItem = {
   id: string;
   file: File;
+  metadata: Record<string, string>;
   status: "queued" | "uploading" | "done" | "error";
   error?: string;
 };
@@ -49,12 +56,18 @@ export function Uploader({
   category = "other",
   onAdded,
   replacesId,
+  folderId = "",
+  submittedByMemberId = "",
+  recipientMemberIds = [],
 }: {
   entityType?: string;
   entityId?: string;
   category?: string;
   onAdded?: (file: FileRecord) => void;
   replacesId?: string;
+  folderId?: string;
+  submittedByMemberId?: string;
+  recipientMemberIds?: string[];
 }) {
   const qc = useQueryClient(),
     input = useRef<HTMLInputElement>(null);
@@ -70,10 +83,7 @@ export function Uploader({
       if (item.file.size > 10 * 1024 * 1024) throw new Error("Maximum 10 Mo par fichier.");
       const form = new FormData();
       form.append("file", item.file);
-      form.append("entityType", entityType);
-      form.append("entityId", entityId);
-      form.append("category", category);
-      if (replacesId) form.append("replacesId", replacesId);
+      for (const [key, value] of Object.entries(item.metadata)) form.append(key, value);
       controller.current = new AbortController();
       const file = await api<FileRecord>("/api/v2/files", {
         method: "POST",
@@ -105,7 +115,20 @@ export function Uploader({
     if (!list || busy) return;
     const batch = Array.from(list)
       .slice(0, replacesId ? 1 : 12)
-      .map((file) => ({ id: crypto.randomUUID(), file, status: "queued" as const }));
+      .map((file) => ({
+        id: crypto.randomUUID(),
+        file,
+        metadata: {
+          entityType,
+          entityId,
+          category,
+          folderId,
+          submittedByMemberId,
+          recipientMemberIds: JSON.stringify(recipientMemberIds),
+          ...(replacesId ? { replacesId } : {}),
+        },
+        status: "queued" as const,
+      }));
     setItems((rows) => [...rows, ...batch]);
     for (const item of batch) await send(item);
   }
@@ -325,15 +348,39 @@ function FileReview({
   onClose: () => void;
 }) {
   const update = useFileUpdate();
+  const [recipients, setRecipients] = useState(file.recipientMemberIds || []);
+  const [entityType, setEntityType] = useState(file.entityType);
+  const destinations =
+    entityType === "member"
+      ? data.core.members.map((m) => ({ id: m.id, name: `${m.first_name} ${m.last_name}` }))
+      : entityType === "event"
+        ? data.core.events.map((e) => ({ id: e.id, name: e.title }))
+        : entityType === "task"
+          ? data.flow.workTasks.map((t) => ({ id: t.id, name: t.title }))
+          : entityType === "club"
+            ? data.core.clubs
+            : [];
   return (
     <Modal title={file.name} onClose={onClose}>
       <Attachments ids={[file.id]} data={data} />
+      <p className="flow-muted">
+        Ajouté par : {file.uploadedBy || "Historique antérieur"} · {datetime(file.createdAt)}
+        <br />
+        Dossier :{" "}
+        {folderPath(data.flow.folders || [], file.folderId)
+          .map((f) => f.name)
+          .join(" / ") || "Racine"}
+      </p>
       <form
         className="flow-form"
         onSubmit={async (e) => {
           e.preventDefault();
           try {
-            await update.mutateAsync({ id: file.id, ...formValues(e.currentTarget) });
+            await update.mutateAsync({
+              id: file.id,
+              ...formValues(e.currentTarget),
+              recipientMemberIds: recipients,
+            });
             onClose();
           } catch {
             /* preserve form */
@@ -341,6 +388,63 @@ function FileReview({
         }}
       >
         <div className="flow-form-grid">
+          <Select label="Dossier de classement" name="folderId" defaultValue={file.folderId || ""}>
+            <FolderOptions data={data} />
+          </Select>
+          <Select
+            label="Transmis par le membre (déclaré)"
+            name="submittedByMemberId"
+            defaultValue={file.submittedByMemberId || ""}
+          >
+            <option value="">Non renseigné</option>
+            {data.core.members.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.first_name} {m.last_name}
+              </option>
+            ))}
+          </Select>
+          <Select
+            label="Rattacher à"
+            name="entityType"
+            value={entityType}
+            onChange={(e) => setEntityType(e.target.value)}
+          >
+            {[...new Set([file.entityType, "document", "club", "member", "event", "task"])].map(
+              (type) => (
+                <option key={type} value={type}>
+                  {(
+                    {
+                      document: "Document du club",
+                      club: "Club",
+                      member: "Membre",
+                      event: "Événement",
+                      task: "Tâche",
+                    } as Record<string, string>
+                  )[type] || type}
+                </option>
+              ),
+            )}
+          </Select>
+          {destinations.length ? (
+            <Select
+              key={entityType}
+              label="Destination"
+              name="entityId"
+              defaultValue={entityType === file.entityType ? file.entityId : destinations[0]?.id}
+            >
+              {destinations.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name}
+                </option>
+              ))}
+            </Select>
+          ) : (
+            <input
+              type="hidden"
+              name="entityId"
+              value={entityType === file.entityType ? file.entityId : ""}
+            />
+          )}
           <Select label="Validation" name="status" defaultValue={file.status}>
             {["pending", "approved", "rejected", "archived"].map((value) => (
               <option key={value} value={value}>
@@ -369,6 +473,18 @@ function FileReview({
             defaultValue={file.expiresAt || ""}
           />
         </div>
+        <Select
+          label="Destiné aux membres (plusieurs choix possibles)"
+          multiple
+          value={recipients}
+          onChange={(e) => setRecipients(Array.from(e.target.selectedOptions, (o) => o.value))}
+        >
+          {data.core.members.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.first_name} {m.last_name}
+            </option>
+          ))}
+        </Select>
         <Textarea label="Commentaire ou motif de refus" name="note" defaultValue={file.note} />
         <Feedback error={update.error} />
         <FormActions pending={update.isPending} onClose={onClose} />
@@ -387,6 +503,9 @@ function FileReview({
         entityId={file.entityId}
         category={file.category}
         replacesId={file.id}
+        folderId={file.folderId}
+        submittedByMemberId={file.submittedByMemberId}
+        recipientMemberIds={file.recipientMemberIds}
         onAdded={() => onClose()}
       />
     </Modal>
@@ -403,9 +522,11 @@ export function DocumentPanel({
   entityId: string;
   title?: string;
 }) {
-  const [category, setCategory] = useState("other");
+  const [category, setCategory] = useState("other"),
+    [folder, setFolder] = useState(""),
+    [submittedBy, setSubmittedBy] = useState("");
   const [review, setReview] = useState<FileRecord | null>(null);
-  const files = data.files.filter(
+  const files = latestFiles(data.files).filter(
     (f) => f.entityType === entityType && f.entityId === entityId && f.status !== "archived",
   );
   return (
@@ -421,7 +542,42 @@ export function DocumentPanel({
           </option>
         ))}
       </Select>
-      <Uploader entityType={entityType} entityId={entityId} category={category} />
+      <div className="flow-form-grid">
+        <Select
+          label="Dossier de classement"
+          value={folder}
+          onChange={(e) => setFolder(e.target.value)}
+        >
+          <FolderOptions data={data} />
+        </Select>
+        <Select
+          label="Transmis par le membre (déclaré)"
+          value={submittedBy}
+          onChange={(e) => setSubmittedBy(e.target.value)}
+        >
+          <option value="">Non renseigné</option>
+          {data.core.members.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.first_name} {m.last_name}
+            </option>
+          ))}
+        </Select>
+      </div>
+      <Uploader
+        entityType={entityType}
+        entityId={entityId}
+        category={category}
+        folderId={folder}
+        submittedByMemberId={submittedBy}
+        recipientMemberIds={entityType === "member" ? [entityId] : []}
+      />
+      <DocumentDownload data={data} files={files} />
+      {entityType === "event" && (
+        <p className="flow-muted">
+          Les dernières versions actives de ces documents sont jointes aux prochains envois de
+          convocations et relances (12 pièces maximum).
+        </p>
+      )}
       {files.length ? (
         <div className="document-grid">
           {files.map((f) => (
@@ -461,7 +617,9 @@ function FileCard({ file, onOpen }: { file: FileRecord; onOpen: () => void }) {
         </a>
       </div>
       {file.expiresAt && <small>Échéance : {shortDate(file.expiresAt)}</small>}
-      <small>{datetime(file.createdAt)}</small>
+      <small>
+        {datetime(file.createdAt)} · {file.uploadedBy || "Ajout antérieur"}
+      </small>
     </article>
   );
 }
@@ -469,54 +627,67 @@ export function DocumentsPage() {
   return <Workspace>{(data) => <Documents data={data} />}</Workspace>;
 }
 function Documents({ data }: { data: WorkspaceView }) {
-  const [search, setSearch] = useState(""),
-    [filter, setFilter] = useState(""),
-    [review, setReview] = useState<FileRecord | null>(null);
-  const files = data.files.filter(
-    (f) => f.name.toLowerCase().includes(search.toLowerCase()) && (!filter || f.status === filter),
-  );
+  const [review, setReview] = useState<FileRecord | null>(null);
+  const [category, setCategory] = useState("other"),
+    [submittedBy, setSubmittedBy] = useState(""),
+    [recipients, setRecipients] = useState<string[]>([]);
   return (
-    <Page
-      title="Documents & médias"
-      description="Les fichiers du club, leur validation et leurs versions."
-    >
-      <Metrics
-        items={[
-          { label: "Fichiers", value: data.files.length },
-          { label: "À vérifier", value: data.files.filter((f) => f.status === "pending").length },
-          { label: "Validés", value: data.files.filter((f) => f.status === "approved").length },
-          {
-            label: "Expirés",
-            value: data.files.filter(
-              (f) => f.expiresAt && f.expiresAt < new Date().toISOString().slice(0, 10),
-            ).length,
-          },
-        ]}
+    <>
+      <DocumentLibrary
+        data={data}
+        uploader={(folderId) => (
+          <>
+            <div className="flow-form-grid">
+              <Select
+                label="Type de document"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {Object.entries(categories).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+              <Select
+                label="Transmis par le membre (déclaré)"
+                value={submittedBy}
+                onChange={(e) => setSubmittedBy(e.target.value)}
+              >
+                <option value="">Non renseigné</option>
+                {data.core.members.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.first_name} {m.last_name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <Select
+              label="Destiné aux membres (plusieurs choix possibles)"
+              multiple
+              value={recipients}
+              onChange={(e) => setRecipients(Array.from(e.target.selectedOptions, (o) => o.value))}
+            >
+              {data.core.members.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.first_name} {m.last_name}
+                </option>
+              ))}
+            </Select>
+            <Uploader
+              entityType="club"
+              entityId={data.core.clubs[0].id}
+              category={category}
+              folderId={folderId}
+              submittedByMemberId={submittedBy}
+              recipientMemberIds={recipients}
+            />
+          </>
+        )}
+        card={(file) => <FileCard file={file} onOpen={() => setReview(file)} />}
       />
-      <Panel title="Ajouter au club">
-        <Uploader entityType="club" entityId={data.core.clubs[0].id} />
-      </Panel>
-      <div className="flow-toolbar">
-        <SearchBox value={search} onChange={setSearch} />
-        <Select label="Statut" value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value="">Tous</option>
-          <option value="pending">À vérifier</option>
-          <option value="approved">Validés</option>
-          <option value="rejected">Refusés</option>
-          <option value="archived">Archivés</option>
-        </Select>
-      </div>
-      {files.length ? (
-        <div className="document-grid">
-          {files.map((f) => (
-            <FileCard key={f.id} file={f} onOpen={() => setReview(f)} />
-          ))}
-        </div>
-      ) : (
-        <Empty>Aucun document ne correspond à cette recherche.</Empty>
-      )}
       {review && <FileReview file={review} data={data} onClose={() => setReview(null)} />}
-    </Page>
+    </>
   );
 }
 export function MemberDossierPage() {
@@ -538,11 +709,12 @@ function MemberDossier({ data, memberId }: { data: WorkspaceView; memberId: stri
         Ce membre n’existe plus. <Link to="/members">Revenir à l’annuaire</Link>
       </Empty>
     );
-  const docs = data.files.filter((f) => f.entityType === "member" && f.entityId === memberId);
+  const docs = latestFiles(memberFiles(data, memberId));
+  const tasks = data.flow.workTasks.filter((t) => t.memberId === memberId);
   return (
     <Page
       title={`${member.first_name} ${member.last_name}`}
-      back="/members"
+      back="/users"
       description={`${data.core.teams.find((t) => t.id === member.team_id)?.name} · Dossier membre`}
     >
       <div className="flow-two-columns">
@@ -611,10 +783,100 @@ function MemberDossier({ data, memberId }: { data: WorkspaceView; memberId: stri
         items={[
           { label: "Documents", value: docs.length },
           { label: "À valider", value: docs.filter((f) => f.status === "pending").length },
-          { label: "Licence", value: member.license_number ? "Renseignée" : "À compléter" },
+          { label: "Licence", value: licenseStatus(data, memberId) },
           { label: "Photo", value: current?.photoId ? "Ajoutée" : "À ajouter" },
         ]}
       />
+      <LicenseReminder memberId={memberId} />
+      <MemberActivity data={data} memberId={memberId} docs={docs} />
+      <Panel title="Tâches du membre">
+        <p>
+          {tasks.filter((t) => !["done", "cancelled"].includes(t.status)).length} à accomplir ·{" "}
+          {tasks.filter((t) => t.status === "done").length} terminées ·{" "}
+          {tasks.filter((t) => t.status === "cancelled").length} annulées
+        </p>
+        <Link className="flow-button secondary" to={`/tasks?memberId=${memberId}`}>
+          Ouvrir le tableau des tâches de ce membre
+        </Link>
+        <div className="flow-table-wrap">
+          <table className="flow-table">
+            <thead>
+              <tr>
+                <th>Tâche</th>
+                <th>Échéance</th>
+                <th>État</th>
+                <th>Checklist</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tasks.map((t) => (
+                <tr key={t.id}>
+                  <td>
+                    <Link className="flow-link" to={`/tasks?memberId=${memberId}&taskId=${t.id}`}>
+                      {t.title}
+                    </Link>
+                  </td>
+                  <td>{datetime(t.dueAt)}</td>
+                  <td>
+                    <Status value={t.status} />
+                  </td>
+                  <td>
+                    {t.checklist.filter((c) => c.done).length}/{t.checklist.length}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {!tasks.length && <Empty>Aucune tâche attribuée.</Empty>}
+      </Panel>
+      <Panel title="Convocations et documents des événements">
+        <div className="flow-table-wrap">
+          <table className="flow-table">
+            <thead>
+              <tr>
+                <th>Événement</th>
+                <th>Date</th>
+                <th>Disponibilité</th>
+                <th>Documents</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.core.invitations
+                .filter((i) => i.member.id === memberId)
+                .map((i) => {
+                  const event = data.core.events.find((e) => e.id === i.event_id);
+                  return (
+                    <tr key={i.id}>
+                      <td>
+                        <Link className="flow-link" to={`/events/${i.event_id}`}>
+                          {event?.title || "Événement"}
+                        </Link>
+                      </td>
+                      <td>{datetime(event?.starts_at)}</td>
+                      <td>
+                        {
+                          (
+                            {
+                              pending: "En attente",
+                              available: "Disponible",
+                              unavailable: "Indisponible",
+                            } as Record<string, string>
+                          )[i.availability]
+                        }
+                      </td>
+                      <td>
+                        <Link className="flow-link" to={`/events/${i.event_id}?tab=documents`}>
+                          Ouvrir les pièces
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+      </Panel>
       <DocumentPanel
         data={data}
         entityType="member"
@@ -625,5 +887,104 @@ function MemberDossier({ data, memberId }: { data: WorkspaceView; memberId: stri
         <AuditTrail data={data} entityId={memberId} />
       </Panel>
     </Page>
+  );
+}
+
+function MemberActivity({
+  data,
+  memberId,
+  docs,
+}: {
+  data: WorkspaceView;
+  memberId: string;
+  docs: FileRecord[];
+}) {
+  const [view, setView] = useState("all"),
+    [search, setSearch] = useState(""),
+    [review, setReview] = useState<FileRecord | null>(null);
+  const files = docs.filter(
+    (f) =>
+      (view === "all" ||
+        (view === "submitted"
+          ? f.submittedByMemberId === memberId
+          : f.submittedByMemberId !== memberId)) &&
+      f.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()),
+  );
+  return (
+    <Panel title="Tous les documents du membre">
+      <div className="flow-toolbar">
+        <SearchBox value={search} onChange={setSearch} />
+        <Select
+          label="Origine des documents"
+          value={view}
+          onChange={(e) => setView(e.target.value)}
+        >
+          <option value="all">Tous les documents liés</option>
+          <option value="submitted">Transmis par ce membre</option>
+          <option value="received">Reçus ou rattachés au membre</option>
+        </Select>
+      </div>
+      <p className="flow-muted">
+        Inclut les fichiers du dossier, des tâches, des convocations, des discussions et des envois
+        destinés à ce membre. Le déposant déclaré indique l’origine fournie au gestionnaire.
+      </p>
+      <DocumentDownload data={data} files={files} name="foot-easy-dossier-membre" />
+      <div className="flow-table-wrap">
+        <table className="flow-table">
+          <thead>
+            <tr>
+              <th>Document</th>
+              <th>Dossier / rattachement</th>
+              <th>Origine</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {files.map((f) => (
+              <tr key={f.id}>
+                <td>
+                  {f.name}
+                  <small>
+                    v{f.version} · {datetime(f.createdAt)}
+                  </small>
+                </td>
+                <td>
+                  {folderPath(data.flow.folders || [], f.folderId)
+                    .map((p) => p.name)
+                    .join(" / ") || "Racine"}
+                  <small>
+                    {f.entityType === "event"
+                      ? data.core.events.find((e) => e.id === f.entityId)?.title
+                      : f.entityType === "task"
+                        ? data.flow.workTasks.find((t) => t.id === f.entityId)?.title
+                        : f.entityType}
+                  </small>
+                </td>
+                <td>
+                  {f.submittedByMemberId
+                    ? `Transmis par ${person(data, f.submittedByMemberId)}`
+                    : "Reçu ou rattaché"}
+                  <small>Ajouté par {f.uploadedBy || "Historique antérieur"}</small>
+                </td>
+                <td>
+                  <Status value={f.status} />
+                </td>
+                <td>
+                  <Button size="sm" variant="outline" onClick={() => setReview(f)}>
+                    Voir / classer
+                  </Button>
+                  <a className="flow-link" href={`${f.url}?download=1`}>
+                    Télécharger
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {!files.length && <Empty>Aucun document dans cette sélection.</Empty>}
+      {review && <FileReview file={review} data={data} onClose={() => setReview(null)} />}
+    </Panel>
   );
 }

@@ -10,9 +10,10 @@ marine, vert, cartes blanches, tableaux, calendrier, terrain et tâches en colon
 | --- | --- |
 | Calendrier | Mois/agenda, filtres, événements uniques ou récurrents, heure locale préservée au changement d’heure, modification, annulation/rétablissement, export iCalendar |
 | Membres | Annuaire, import CSV/XLSX, contrôle des doublons, export filtré, coordonnées, licence, maillot, photo, contact d’urgence, responsable légal et préférences de communication |
-| Convocations | Ciblage des membres, disponibilités, pointage des présences, relances des sans-réponse, suivi des campagnes associées |
+| Utilisateurs | Liste filtrable, ajout rapide, dossier individuel, documents transmis/reçus/rattachés, état de licence et relance suivie, tâches à accomplir et terminées, convocations |
+| Convocations | Ciblage des membres, disponibilités, pointage des présences, relance directe des sans-réponse, documents liés aux événements et joints aux prochains envois, suivi des campagnes associées |
 | Compositions et statistiques | Formations foot à 11/8/5, titulaires/remplaçants, publication, scores, faits de match, présences et bilans d’équipe |
-| Documents | Dépôt multiple, glisser-déposer, images/PDF/DOCX/XLSX/CSV/TXT, reprise après erreur, téléchargement, versions, échéance, validation/refus motivé/archivage |
+| Documents | Dépôt multiple, glisser-déposer, images/PDF/DOCX/XLSX/CSV/TXT, reprise après erreur, dossiers et sous-dossiers, déplacement individuel ou groupé, recherche et filtres, téléchargement ZIP avec arborescence, export CSV, origine et destinataires déclarés, versions, échéance, validation/refus motivé/archivage |
 | Messagerie | Groupe, conversation directe ou annonce, destinataires, rattachement équipe/événement, fichiers/images, réactions, épinglage, archivage/réouverture |
 | Campagnes | Assistant en quatre étapes, email/SMS/push/espace membre, ciblage, consentements publicitaires, modèles, personnalisation, fichiers et CTA, brouillon, test, programmation, pause/reprise/annulation, duplication |
 | Distribution | Rapport par destinataire, file/envoi/distribution/lecture/clic/échec/rejet/exclusion/désinscription, journal des étapes, export CSV et relance des échecs uniquement |
@@ -85,7 +86,13 @@ Les modifications du club utilisent révision, transaction atomique et identifia
 pour éviter les écritures perdues et les doubles opérations. Les instantanés sont découpés
 en lignes sous la limite D1 ; le plafond applicatif est de 12 Mo par espace, hors fichiers R2.
 Les fichiers sont limités à 10 Mo chacun ; les imports d’annuaire à 2 Mo et 1 000 lignes.
-L’export JSON inclut les données et métadonnées ; les fichiers se téléchargent séparément.
+L’export JSON inclut les données et métadonnées ; les fichiers se récupèrent individuellement
+ou dans une archive ZIP conservant leurs dossiers (100 Mo maximum par sélection).
+Les dernières versions sont affichées par défaut ; les anciennes restent accessibles.
+Le dossier de classement est indépendant du rattachement membre/événement/tâche.
+Le nom du gestionnaire ayant ajouté un fichier est conservé ; le membre déposant et les
+destinataires sont des informations déclarées, sans preuve de connexion de ces membres.
+Les convocations joignent au maximum 12 dernières pièces actives de l’événement.
 L’historique d’activité conserve les 2 000 dernières entrées et chaque envoi ses 60 dernières étapes.
 
 ## Architecture

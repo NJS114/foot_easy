@@ -36,7 +36,8 @@ describe("Club space", () => {
     renderRoute("/");
 
     const nav = await screen.findByRole("navigation", { name: "Navigation du club" });
-    expect(nav.querySelectorAll("a")).toHaveLength(14);
+    expect(nav.querySelectorAll("a")).toHaveLength(15);
+    expect(nav.querySelector('a[href="/users"]')).toHaveTextContent("Utilisateurs");
   });
 
   it("filters the club calendar by event type", async () => {

@@ -35,16 +35,21 @@ export async function loadWorkspace(db: D1Database, owner: string) {
     metadata.chunked ? JSON.parse(rows.map((r) => r.content || "").join("")) : metadata
   ) as WorkspaceState;
   hydrateCore(state.core);
+  state.flow.folders ??= [];
   return { state, revision: rows[0].revision };
 }
 export async function listFiles(db: D1Database, owner: string): Promise<FileRecord[]> {
   const result = await db
     .prepare(
-      "SELECT id,root_id AS rootId,version,name,mime,size,entity_type AS entityType,entity_id AS entityId,category,status,expires_at AS expiresAt,note,created_at AS createdAt FROM files WHERE owner_id=? ORDER BY created_at DESC",
+      "SELECT id,folder_id AS folderId,uploaded_by AS uploadedBy,submitted_by_member_id AS submittedByMemberId,recipient_member_ids AS recipientMemberIds,root_id AS rootId,version,name,mime,size,entity_type AS entityType,entity_id AS entityId,category,status,expires_at AS expiresAt,note,created_at AS createdAt FROM files WHERE owner_id=? ORDER BY created_at DESC",
     )
     .bind(owner)
-    .all<Omit<FileRecord, "url">>();
-  return result.results.map((f) => ({ ...f, url: `/api/v2/files/${f.id}` }));
+    .all<Omit<FileRecord, "url" | "recipientMemberIds"> & { recipientMemberIds: string }>();
+  return result.results.map((f) => ({
+    ...f,
+    recipientMemberIds: JSON.parse(f.recipientMemberIds || "[]") as string[],
+    url: `/api/v2/files/${f.id}`,
+  }));
 }
 // D1 has a per-row size limit. Split snapshots without splitting Unicode pairs and
 // guard every write with the winning revision/token. D1 batch commits atomically.
