@@ -17,10 +17,28 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 function StatusCell({ status }: { status: string }) {
-  const bg = STATUS_COLORS[status] ?? "bg-gray-200";
+  const { t } = useTranslation();
+  const label = t(`attendance.${status}`);
+  const symbol = ["available", "on_time"].includes(status)
+    ? "✓"
+    : ["late", "uncertain"].includes(status)
+      ? "◷"
+      : ["unavailable", "unexcused"].includes(status)
+        ? "×"
+        : status === "injured"
+          ? "+"
+          : status === "not_invited"
+            ? "—"
+            : "·";
   return (
-    <td className="px-0.5 py-1">
-      <div className={`mx-auto size-5 rounded-sm ${bg}`} title={status} />
+    <td className="px-2 py-3">
+      <span
+        className={`mx-auto flex size-6 items-center justify-center rounded-full text-sm font-bold ${STATUS_COLORS[status] ?? "bg-gray-200"} ${status === "not_invited" ? "text-slate-400" : "text-white"}`}
+        title={label}
+        aria-label={label}
+      >
+        {symbol}
+      </span>
     </td>
   );
 }

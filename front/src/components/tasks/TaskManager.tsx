@@ -2,6 +2,8 @@ import { ListChecks, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { AssignmentResponse, Member, TeamTaskResponse } from "@/api/client";
+import { FormError } from "@/components/FormField";
+import { TaskCatalog, TaskIcon } from "@/components/tasks/TaskCatalog";
 import { EmptyState, ErrorState, LoadingState } from "@/components/StateViews";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -23,6 +25,9 @@ function AssignmentRow({
 }) {
   return (
     <div className="flex items-center gap-2 rounded-md border bg-card px-3 py-2 text-sm">
+      <span className="stat-icon">
+        <TaskIcon name={assignment.task.icon} />
+      </span>
       <span className="flex-1">
         <span className="font-medium">{assignment.task.name}</span>
         <span className="text-muted-foreground">
@@ -30,7 +35,11 @@ function AssignmentRow({
           {assignment.member.first_name} {assignment.member.last_name}
         </span>
       </span>
-      <button onClick={onDelete} className="text-destructive hover:text-destructive/80">
+      <button
+        aria-label={`Retirer ${assignment.task.name} pour ${assignment.member.first_name}`}
+        onClick={onDelete}
+        className="text-destructive hover:text-destructive/80"
+      >
         <Trash2 className="size-4" />
       </button>
     </div>
@@ -84,9 +93,14 @@ export function TaskAssigner({ eventId, teamId }: { eventId: string; teamId: str
         ))}
       </div>
 
+      <FormError error={assignMut.error || unassignMut.error || defaultsMut.error} />
       {tasks.length > 0 && members.length > 0 && (
         <div className="flex flex-wrap items-end gap-2">
-          <NativeSelect value={taskId} onChange={(e) => setTaskId(e.target.value)}>
+          <NativeSelect
+            aria-label="Tâche à attribuer"
+            value={taskId}
+            onChange={(e) => setTaskId(e.target.value)}
+          >
             <option value="">{t("tasks.pickTask")}</option>
             {tasks.map((task) => (
               <option key={task.id} value={task.id}>
@@ -94,7 +108,11 @@ export function TaskAssigner({ eventId, teamId }: { eventId: string; teamId: str
               </option>
             ))}
           </NativeSelect>
-          <NativeSelect value={memberId} onChange={(e) => setMemberId(e.target.value)}>
+          <NativeSelect
+            aria-label="Membre responsable"
+            value={memberId}
+            onChange={(e) => setMemberId(e.target.value)}
+          >
             <option value="">{t("tasks.pickMember")}</option>
             {members.map((m) => (
               <option key={m.id} value={m.id}>
@@ -106,15 +124,29 @@ export function TaskAssigner({ eventId, teamId }: { eventId: string; teamId: str
             size="sm"
             disabled={!taskId || !memberId || assignMut.isPending}
             onClick={() => {
-              assignMut.mutate({ event_id: eventId, team_task_id: taskId, member_id: memberId });
-              setTaskId("");
-              setMemberId("");
+              assignMut.mutate(
+                { event_id: eventId, team_task_id: taskId, member_id: memberId },
+                {
+                  onSuccess: () => {
+                    setTaskId("");
+                    setMemberId("");
+                  },
+                },
+              );
             }}
           >
             <Plus className="mr-1 size-4" /> {t("tasks.assign")}
           </Button>
         </div>
       )}
+      <details className="mt-4">
+        <summary className="cursor-pointer text-sm font-medium text-primary">
+          Personnaliser le catalogue des tâches
+        </summary>
+        <div className="mt-4">
+          <TaskCatalog teamId={teamId} />
+        </div>
+      </details>
     </div>
   );
 }

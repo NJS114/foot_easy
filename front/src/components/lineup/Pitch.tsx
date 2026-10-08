@@ -21,8 +21,13 @@ export function Pitch({ formation, slots, players, selectedId, onPositionClick }
     <div
       role="group"
       aria-label={t("lineup.pitch")}
-      className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-xl border-4 border-white/80 bg-[repeating-linear-gradient(0deg,#15803d_0,#15803d_10%,#16a34a_10%,#16a34a_20%)] shadow-inner"
+      className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden rounded-xl border-8 border-[#2f7250] bg-[repeating-linear-gradient(0deg,#428c61_0,#428c61_10%,#499667_10%,#499667_20%)] shadow-inner"
     >
+      <div aria-hidden className="absolute inset-3 rounded-sm border-2 border-white/50" />
+      <div
+        aria-hidden
+        className="absolute left-1/2 top-3 h-[14%] w-1/2 -translate-x-1/2 border-2 border-t-0 border-white/60"
+      />
       <div aria-hidden className="absolute inset-x-0 top-1/2 h-0.5 bg-white/70" />
       <div
         aria-hidden

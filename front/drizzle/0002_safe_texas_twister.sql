@@ -1,0 +1,1 @@
+ALTER TABLE `files` ADD `upload_hash` text DEFAULT '' NOT NULL;

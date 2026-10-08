@@ -19,6 +19,8 @@ export function LineupEditor({ event }: { event: Event }) {
   const error = queries.find((query) => query.error)?.error;
   if (error) return <ErrorState error={error} />;
 
+  if (!formations.data?.length) return <EmptyState message="Aucun schéma tactique disponible." />;
+
   const players = (members.data?.items ?? []).filter((member) => member.role === "player");
   if (!players.length) return <EmptyState message={t("lineup.noPlayers")} />;
   const availability = new Map(

@@ -1,92 +1,135 @@
-# Foot Easy
+# Foot Easy · Espace club
 
-Logiciel de gestion de club de football amateur, organisé en modules :
+Application privée de gestion de football amateur : interface React, API compatible Workers,
+données persistantes et fichiers. La présentation reprend les repères des références : bleu
+marine, vert, cartes blanches, tableaux, calendrier, terrain et tâches en colonnes.
 
-| Module | État |
-|---|---|
-| Tableau de bord | Prochains événements du club, équipes |
-| Calendrier & Planning | Agenda du club par jour, filtres équipe / type |
-| Gestion sportive | Équipes (catégorie, saison, couleur), effectif, événements (match, entraînement, tournoi), convocations et relances, compositions (8 schémas, foot à 11 / 8 / 5), score et faits de match, statistiques et assiduité |
-| Gestion des membres · Communication & Messagerie · Inscriptions & Paiements · Visibilité sponsors | Bientôt — périmètre décrit dans [`specs/`](./specs) |
+## Parcours disponibles
 
-La feuille de route complète (15 épopées, 49 user stories) est dans [`specs/`](./specs) ;
-l'organisation en espace club est décrite dans
-[ADR-0004](./docs/adr/0004-club-space-and-module-navigation.md).
+| Module | Parcours |
+| --- | --- |
+| Calendrier | Mois/agenda, filtres, événements uniques ou récurrents, heure locale préservée au changement d’heure, modification, annulation/rétablissement, export iCalendar |
+| Membres | Annuaire, import CSV/XLSX, contrôle des doublons, export filtré, coordonnées, licence, maillot, photo, contact d’urgence, responsable légal et préférences de communication |
+| Utilisateurs | Liste filtrable, ajout rapide, dossier individuel, documents transmis/reçus/rattachés, état de licence et relance suivie, tâches à accomplir et terminées, convocations |
+| Convocations | Ciblage des membres, disponibilités, pointage des présences, relance directe des sans-réponse, documents liés aux événements et joints aux prochains envois, suivi des campagnes associées |
+| Compositions et statistiques | Formations foot à 11/8/5, titulaires/remplaçants, publication, scores, faits de match, présences et bilans d’équipe |
+| Documents | Dépôt multiple, glisser-déposer, images/PDF/DOCX/XLSX/CSV/TXT, reprise après erreur, dossiers et sous-dossiers, déplacement individuel ou groupé, recherche et filtres, téléchargement ZIP avec arborescence, export CSV, origine et destinataires déclarés, versions, échéance, validation/refus motivé/archivage |
+| Messagerie | Groupe, conversation directe ou annonce, destinataires, rattachement équipe/événement, fichiers/images, réactions, épinglage, archivage/réouverture |
+| Campagnes | Assistant en quatre étapes, email/SMS/push/espace membre, ciblage, consentements publicitaires, modèles, personnalisation, fichiers et CTA, brouillon, test, programmation, pause/reprise/annulation, duplication |
+| Distribution | Rapport par destinataire, file/envoi/distribution/lecture/clic/échec/rejet/exclusion/désinscription, journal des étapes, export CSV et relance des échecs uniquement |
+| Collectes | Cotisation/équipement/tournoi/don, montant par membre, échéancier mensuel, ouverture/clôture, paiements partiels, transaction en attente/échec/succès, reçus imprimables, remboursement, exonération, annulation et relance des impayés |
+| Sponsors et publicités | Prospect → contact → proposition → négociation → signature, montant/période, logo/contrat, emplacements avec visuel et lien, activation/pause/fin, métriques simulées, campagne liée au partenaire |
+| Tâches | Attribution équipe/membre/événement, priorité, échéance, checklist, justificatif obligatoire, commentaires, à faire/en cours/bloqué/à valider/terminé, correction motivée et réouverture |
+| Championnats | 2–32 équipes internes/externes, logos, barème, pénalités initiales, aller/retour avec exemptions, matchs du club ajoutés au calendrier, report/annulation, résultat, classement calculé, export, pièces jointes et clôture |
+| Réglages | Scénarios de simulation succès/réaliste/échec, journal d’activité et export des données |
 
-## Stack
+Les modifications pratiques d’un événement, son annulation/rétablissement et son résultat
+créent une notification simulée pour les membres convoqués. Publier ou actualiser une
+composition notifie ses titulaires et remplaçants ; réenregistrer une composition identique
+ne crée pas un nouvel envoi. Les règlements confirmés/refusés et remboursements ont leur
+confirmation, les tâches leur suivi d’attribution/statut et les conversations leurs notifications
+dans l’espace club. Tous utilisent le journal de distribution des campagnes. La fiche d’événement
+affiche les étapes et permet de rejoindre directement chaque action et le dernier envoi.
 
-| Partie | Technologies |
-|---|---|
-| `back/` | FastAPI · SQLAlchemy 2 async · Alembic · Postgres · Pydantic v2 · pytest |
-| `front/` | Vite · React 19 · TypeScript strict · Tailwind CSS 4 + shadcn/ui · TanStack Query · i18next · Vitest + RTL + MSW |
-| Infra locale | docker-compose · Traefik · Postgres · Adminer |
+## Nature des données et des simulations
 
-Décisions d'architecture : [`docs/adr/`](./docs/adr).
+Le premier accès initialise un **club fictif**. Les modifications suivantes sont enregistrées
+côté serveur. Les destinataires, statuts d’envoi, réactions de livraison, paiements par carte,
+remboursements et mesures publicitaires peuvent être testés sans fournisseur externe.
+**Aucun email, SMS, push ou débit bancaire réel n’est effectué.** Un règlement espèces/virement/
+chèque est une déclaration manuelle, sans rapprochement bancaire.
 
-## Démarrer avec Docker
+La progression des statuts et le démarrage d’une campagne programmée sont calculés lors
+d’une consultation après l’heure prévue. Aucun ordonnanceur autonome n’est configuré.
+L’application distingue ces simulations dans ses écrans. Les conversations sont enregistrées
+dans l’espace du gestionnaire ; elles ne constituent pas encore une messagerie multi-comptes.
+L’ajout d’un membre/destinataire n’invite personne et n’accorde pas d’accès.
 
-```bash
-cp .env.example .env
-docker compose up -d --build
-```
+## Développement local
 
-| Service | URL |
-|---|---|
-| Application | http://foot-easy.localhost |
-| API + Swagger | http://api.foot-easy.localhost/docs |
-| Adminer | http://adminer.foot-easy.localhost |
-| Dashboard Traefik | http://traefik.foot-easy.localhost |
+Node **24 ou supérieur**, npm :
 
-Les migrations Alembic sont appliquées au démarrage du conteneur `api`.
-
-## Développer sans Docker
-
-**Backend** (Python ≥ 3.12) :
-
-```bash
-cd back
-python -m venv .venv && .venv/Scripts/activate   # Windows ; source .venv/bin/activate sinon
-pip install -e ".[dev]"
-pytest                                            # tests (SQLite en mémoire, voir ADR-0003)
-ruff check . && ruff format --check .
-DATABASE_URL=postgresql+asyncpg://… alembic upgrade head
-uvicorn app.main:app --reload
-```
-
-**Frontend** (Node ≥ 20.16, npm uniquement) :
-
-```bash
+```sh
 cd front
 npm ci --include=dev
-npm run dev            # http://localhost:5173 (VITE_API_URL pour pointer l'API)
-npm test
-npm run lint && npm run typecheck && npm run build
+npm run dev
 ```
 
-## Contrat d'API
+Vite sert l’interface sur `http://localhost:5173`. L’API locale écoute uniquement sur
+`127.0.0.1:8788` ; Vite lui relaie `/api`. Le simulateur de stockage utilise SQLite et les fichiers
+réels dans `.local-data/` (ignoré par Git). Un compte de développement est injecté par cet
+adaptateur local uniquement. Ce serveur de développement n’est pas un serveur public authentifié.
 
-L'OpenAPI du backend est la source de vérité. Après toute modification d'un endpoint :
-
-```bash
-cd back && python -c "import json, app.main as m; print(json.dumps(m.app.openapi(), indent=2))" > openapi.json
-cd ../front && npm run api:types
+```sh
+npm test                 # React + contrats + parcours Worker sur SQLite
+npm run lint
+npm run build             # dist/client + dist/server
 ```
 
-Les erreurs suivent toujours l'enveloppe `{code, message, errors[], request_id}`.
+`npm run validate:api` régénère les validateurs d’entrées du contrat sportif ; ils sont compilés
+à l’avance pour ne pas utiliser d’évaluation dynamique dans Workers. `npm run db:generate`
+génère une migration après modification du schéma de stockage.
 
-## Qualité
+## Publication et stockage
 
-```bash
-pip install pre-commit
-pre-commit install --hook-type pre-commit --hook-type commit-msg
-pre-commit run --all-files
-```
+Le manifeste `.openai/hosting.json` déclare le projet Sites et les liaisons `DB` (D1) et
+`BUCKET` (R2). La compilation produit le Worker et les ressources statiques. Les migrations
+versionnées de `drizzle/` sont incluses au déploiement Sites.
 
-Commits au format Conventional Commits ; chaque PR suit
-[`.github/pull_request_template.md`](./.github/pull_request_template.md).
+Le Worker lit l’identité vérifiée injectée par Sites (`oai-authenticated-user-id`) et refuse
+les requêtes API anonymes. Données et téléchargements sont isolés par propriétaire. Déployer
+uniquement derrière cette passerelle d’identité ; exposer directement le Worker avec des
+en-têtes d’identité non vérifiés n’est pas une configuration d’authentification prise en charge.
+La version actuelle du Site conserve son audience privée.
 
-## Sécurité
+Les modifications du club utilisent révision, transaction atomique et identifiant de requête
+pour éviter les écritures perdues et les doubles opérations. Les instantanés sont découpés
+en lignes sous la limite D1 ; le plafond applicatif est de 12 Mo par espace, hors fichiers R2.
+Les fichiers sont limités à 10 Mo chacun ; les imports d’annuaire à 2 Mo et 1 000 lignes.
+L’export JSON inclut les données et métadonnées ; les fichiers se récupèrent individuellement
+ou dans une archive ZIP conservant leurs dossiers (100 Mo maximum par sélection).
+Les dernières versions sont affichées par défaut ; les anciennes restent accessibles.
+Le dossier de classement est indépendant du rattachement membre/événement/tâche.
+Le nom du gestionnaire ayant ajouté un fichier est conservé ; le membre déposant et les
+destinataires sont des informations déclarées, sans preuve de connexion de ces membres.
+Les convocations joignent au maximum 12 dernières pièces actives de l’événement.
+L’historique d’activité conserve les 2 000 dernières entrées et chaque envoi ses 60 dernières étapes.
 
-L'authentification n'est pas encore en place (voir
-[ADR-0002](./docs/adr/0002-authentication-deferred.md)) : **ne pas exposer l'API** hors d'un
-poste de développement avant la livraison de l'épopée 04.
+## Architecture
+
+- `front/src/pages`, `front/src/components` : gestion sportive, calendrier, annuaire et terrain.
+- `front/src/workflows` : écrans, règles métier et transitions des modules administratifs.
+- `front/src/server` : compatibilité API sportive `/api/v1`, validation et données initiales.
+- `front/worker` : API persistante `/api/v1`, `/api/v2/workspace`, `/api/v2/actions`, `/api/v2/files`.
+- `front/db`, `front/drizzle` : schéma et migrations D1 ; fichiers dans R2.
+- `front/scripts/dev-worker.mjs` : adaptateur local SQLite/fichiers, sans dépendance à un compte cloud.
+
+L’API FastAPI/Postgres du dépôt parent reste disponible pour le périmètre sportif historique.
+Elle n’implémente pas les nouvelles routes `/api/v2`. Les deux moteurs ont des bases séparées ;
+il n’y a ni réplication ni import automatique de Postgres vers D1. Pour consulter tous les
+modules comme sur le Site, utiliser le Worker ou `npm run dev` sans `VITE_API_URL` externe.
+
+Avant un usage multi-utilisateurs réel : connecter les fournisseurs et leurs retours signés,
+ajouter l’ordonnancement des envois, les comptes membres/parents, les rôles partagés et les
+règles d’accès du club. Les coordonnées de responsable légal constituent un champ de dossier,
+non un compte parent connecté.
+
+## Docker
+
+Copiez `.env.example` vers `.env` puis lancez `docker compose up -d --build`.
+L’application complète utilise le Worker local avec SQLite et ses fichiers dans le volume
+`club_data` ; l’API FastAPI/Postgres reste accessible séparément pour le périmètre sportif historique.
+
+- Application : http://foot-easy.localhost
+- API FastAPI historique : http://api.foot-easy.localhost/docs
+- Adminer/Postgres : http://adminer.foot-easy.localhost
+
+Le mode local injecte une identité de développement. Le Site publié utilise l’identité vérifiée
+de sa passerelle. `npm run dev:legacy` avec un `VITE_API_URL` externe permet de tester uniquement
+l’API FastAPI ; les modules administratifs `/api/v2` nécessitent le Worker.
+
+## Validation de cette reprise
+
+Les parcours React et les tests Worker couvrent les envois/reprises, consentements, documents,
+versions, paiements/remboursements, tâches, championnat, isolation des utilisateurs et notifications
+de fin de parcours. Le contrat sportif FastAPI reste conservé dans `back/openapi.json`.

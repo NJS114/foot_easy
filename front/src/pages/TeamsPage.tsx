@@ -8,7 +8,7 @@ export function TeamsPage() {
     <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
       <section className="flex flex-col gap-4">
         <div>
-          <h1 className="text-2xl font-bold">{t("teams.title")}</h1>
+          <h1 className="text-[28px] font-bold">{t("teams.title")}</h1>
           <p className="text-muted-foreground">{t("teams.subtitle")}</p>
         </div>
         <TeamList />

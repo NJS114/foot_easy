@@ -1,3 +1,4 @@
+import { initialState } from "@/server/state";
 import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import type { Club, Event, Formation, Invitation, Member, Team } from "@/api/client";
@@ -33,6 +34,10 @@ export const PLAYER: Member = {
   first_name: "Zinedine",
   last_name: "Zidane",
   email: null,
+  phone: null,
+  birth_date: null,
+  license_number: null,
+  jersey_size: null,
   role: "player",
   position: "midfielder",
   shirt_number: 10,
@@ -46,6 +51,7 @@ export const MATCH: Event = {
   title: "Championnat J1",
   starts_at: "2026-10-10T13:00:00Z",
   ends_at: null,
+  series_id: null,
   meeting_at: null,
   location: "Stade municipal",
   opponent: "AS Rivale",
@@ -62,6 +68,7 @@ export const INVITATION: Invitation = {
   event_id: MATCH.id,
   availability: "pending",
   comment: null,
+  attendance: null,
   responded_at: null,
   reminder_count: 0,
   last_reminded_at: null,
@@ -82,5 +89,15 @@ export const FORMATIONS: Formation[] = [
 
 /** Every test runs inside an existing club unless it overrides this handler. */
 export const server = setupServer(
+  http.get("*/api/v2/workspace", () =>
+    HttpResponse.json({
+      ...initialState(),
+      files: [],
+      revision: 1,
+      user: { name: "Coach" },
+      serverTime: new Date().toISOString(),
+    }),
+  ),
+  http.get(apiUrl("/members"), () => HttpResponse.json(page([]))),
   http.get(apiUrl("/clubs"), () => HttpResponse.json(page([CLUB]))),
 );

@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1791362961229,
+      "tag": "0000_even_manta",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791365026253,
+      "tag": "0001_sour_argent",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791365666663,
+      "tag": "0002_safe_texas_twister",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1791380269011,
+      "tag": "0003_outgoing_havok",
+      "breakpoints": true
+    }
+  ]
+}

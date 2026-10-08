@@ -33,7 +33,7 @@ export type AssignmentResponse = Schemas["AssignmentResponse"];
 export type AssignmentCreate = Schemas["AssignmentCreate"];
 export type ImportReport = Schemas["ImportReport"];
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://api.foot-easy.localhost";
+export const API_BASE_URL = import.meta.env.VITE_API_URL || window.location.origin;
 
 // Resolve fetch per call so request interceptors installed later (e.g. MSW in tests) apply.
 export const apiClient = createClient<paths>({

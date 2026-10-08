@@ -14,15 +14,59 @@ const RECORD_FIELDS = [
 
 function SeasonRecord({ stats }: { stats: TeamStats }) {
   const { t } = useTranslation();
+  const colors: Record<string, string> = {
+    wins: "#69b980",
+    draws: "#e8be59",
+    losses: "#df8181",
+    goals_for: "#6191c8",
+    goals_against: "#9196aa",
+  };
   return (
-    <dl className="grid grid-cols-3 gap-3 sm:grid-cols-6">
-      {RECORD_FIELDS.map(([field, labelKey]) => (
-        <div key={field} className="rounded-lg border bg-card p-3 text-center">
-          <dt className="text-xs text-muted-foreground">{t(labelKey)}</dt>
-          <dd className="text-2xl font-bold">{stats[field] as number}</dd>
-        </div>
-      ))}
-    </dl>
+    <div>
+      <dl className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+        {RECORD_FIELDS.map(([field, labelKey]) => {
+          const value = stats[field] as number;
+          const isResult = ["wins", "draws", "losses"].includes(field);
+          const ratio = stats.played ? value / stats.played : 0;
+          return (
+            <div key={field} className="rounded-xl border bg-card p-5 text-center">
+              <dt className="mb-3 text-xs text-muted-foreground">{t(labelKey)}</dt>
+              <dd
+                className="mx-auto flex size-20 items-center justify-center rounded-full text-2xl font-bold"
+                style={
+                  isResult
+                    ? {
+                        background: `conic-gradient(${colors[field]} ${ratio * 360}deg, #edf0f4 0)`,
+                      }
+                    : { background: "#f5f8fa" }
+                }
+              >
+                <span className="flex size-[68px] items-center justify-center rounded-full bg-white">
+                  {value}
+                </span>
+              </dd>
+            </div>
+          );
+        })}
+      </dl>
+      <div className="mt-4 flex items-center gap-3 rounded-lg border bg-card p-4">
+        <span className="text-xs text-muted-foreground">Derniers résultats</span>
+        {stats.form?.length ? (
+          stats.form.map((result, i) => (
+            <span
+              key={i}
+              title={{ W: "Victoire", D: "Nul", L: "Défaite" }[result]}
+              className="flex size-7 items-center justify-center rounded-full text-xs font-bold text-white"
+              style={{ background: { W: "#64ae7d", D: "#cba749", L: "#cf7478" }[result] }}
+            >
+              {{ W: "V", D: "N", L: "D" }[result]}
+            </span>
+          ))
+        ) : (
+          <span className="text-xs text-muted-foreground">Aucun résultat enregistré</span>
+        )}
+      </div>
+    </div>
   );
 }
 

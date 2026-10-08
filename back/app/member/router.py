@@ -32,7 +32,7 @@ def get_member_service(session: SessionDep) -> MemberService:
 
 
 MemberServiceDep = Annotated[MemberService, Depends(get_member_service)]
-MemberQueryDep = Annotated[MemberQuery, Query()]
+MemberQueryDep = Annotated[MemberQuery, Depends(MemberQuery)]
 
 
 @router.get("", response_model=MemberListResponse)

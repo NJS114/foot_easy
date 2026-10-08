@@ -4,7 +4,7 @@ import type { Event } from "@/api/client";
 import { FormError } from "@/components/FormField";
 import { AvailabilitySummaryBar } from "@/components/invitations/AvailabilitySummaryBar";
 import { InvitationList } from "@/components/invitations/InvitationList";
-import { Button } from "@/components/ui/button";
+import { ConfirmButton } from "@/workflows/ui";
 import { useInviteRoster, useRemindPending } from "@/hooks/useInvitations";
 
 export function InvitationsPanel({ event }: { event: Event }) {
@@ -16,14 +16,36 @@ export function InvitationsPanel({ event }: { event: Event }) {
     <div className="flex flex-col gap-3">
       {!event.is_cancelled && (
         <div className="flex flex-wrap gap-2">
-          <Button disabled={inviteRoster.isPending} onClick={() => inviteRoster.mutate()}>
-            <Send aria-hidden />
-            {t("invitations.inviteRoster")}
-          </Button>
-          <Button variant="outline" disabled={remind.isPending} onClick={() => remind.mutate()}>
-            <BellRing aria-hidden />
-            {t("invitations.remind")}
-          </Button>
+          <ConfirmButton
+            variant="default"
+            pending={inviteRoster.isPending}
+            label={
+              <>
+                <Send aria-hidden />
+                {t("invitations.inviteRoster")}
+              </>
+            }
+            title="Confirmer les convocations ?"
+            onConfirm={() => inviteRoster.mutateAsync()}
+          >
+            Les membres qui ne sont pas encore convoqués seront ajoutés. Un email simulé sera suivi
+            pour chacun dans Campagnes & envois ; les convocations existantes ne seront pas
+            renvoyées.
+          </ConfirmButton>
+          <ConfirmButton
+            pending={remind.isPending}
+            label={
+              <>
+                <BellRing aria-hidden />
+                {t("invitations.remind")}
+              </>
+            }
+            title="Relancer les réponses attendues ?"
+            onConfirm={() => remind.mutateAsync()}
+          >
+            Seuls les membres sans réponse recevront une relance simulée. Vous pourrez suivre sa
+            distribution et traiter les échecs dans Campagnes & envois.
+          </ConfirmButton>
         </div>
       )}
       {remind.data && (
