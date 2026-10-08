@@ -27,3 +27,6 @@ dist-ssr
 .env
 
 .local-data/
+
+.dev.vars*
+!.dev.vars.example

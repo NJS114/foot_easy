@@ -18,6 +18,7 @@ beforeEach(() => {
         ? input
         : new Request(new URL(String(input), "http://localhost"), init);
     const path = new URL(request.url).pathname;
+    if (path === "/api/v2/providers/twilio") return Response.json({ local: false });
     if (path === "/api/v2/workspace")
       return Response.json({
         ...state,

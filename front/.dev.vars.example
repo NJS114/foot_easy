@@ -1,0 +1,13 @@
+# Copy to .dev.vars in this directory. Restart npm run dev after any change.
+# This file is read by the local API only. Do not use VITE_ for these values.
+TWILIO_TEST_ENABLED=false
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+# Alternative to Auth Token: fill both API key fields.
+TWILIO_API_KEY_SID=
+TWILIO_API_KEY_SECRET=
+# Use either a Twilio phone number in +countrycode format or a Messaging Service SID.
+TWILIO_FROM_NUMBER=
+TWILIO_MESSAGING_SERVICE_SID=
+# Only this destination can receive a local test SMS. Verify it in a trial account.
+TWILIO_TEST_TO=

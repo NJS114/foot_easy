@@ -36,7 +36,8 @@ affiche les étapes et permet de rejoindre directement chaque action et le derni
 Le premier accès initialise un **club fictif**. Les modifications suivantes sont enregistrées
 côté serveur. Les destinataires, statuts d’envoi, réactions de livraison, paiements par carte,
 remboursements et mesures publicitaires peuvent être testés sans fournisseur externe.
-**Aucun email, SMS, push ou débit bancaire réel n’est effectué.** Un règlement espèces/virement/
+**Les campagnes n’effectuent aucun email, SMS, push ou débit bancaire réel.**
+Le test SMS local décrit ci-dessous est une exception explicitement activée et confirmée. Un règlement espèces/virement/
 chèque est une déclaration manuelle, sans rapprochement bancaire.
 
 La progression des statuts et le démarrage d’une campagne programmée sont calculés lors
@@ -68,6 +69,51 @@ npm run build             # dist/client + dist/server
 `npm run validate:api` régénère les validateurs d’entrées du contrat sportif ; ils sont compilés
 à l’avance pour ne pas utiliser d’évaluation dynamique dans Workers. `npm run db:generate`
 génère une migration après modification du schéma de stockage.
+
+## Tester Twilio en local
+
+Le test SMS réel est disponible dans **Réglages → Twilio · test SMS local**. Il n’active pas
+les campagnes de démonstration : seul ce bouton contacte Twilio, après confirmation.
+
+1. Récupérez la dernière version de `main`.
+2. Copiez `front/.dev.vars.example` vers `front/.dev.vars`.
+3. Complétez `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` et
+   `TWILIO_TEST_TO` (votre téléphone au format international, par exemple `+33…`).
+4. Passez `TWILIO_TEST_ENABLED=true`, puis lancez ou redémarrez `npm run dev` dans `front/`.
+5. Ouvrez `http://localhost:5173/settings`, saisissez le message et confirmez le SMS réel.
+
+Vous pouvez remplacer l’Auth Token par `TWILIO_API_KEY_SID` + `TWILIO_API_KEY_SECRET`
+et le numéro expéditeur par `TWILIO_MESSAGING_SERVICE_SID`. Le panneau indique les valeurs
+manquantes ou invalides, sans afficher les secrets.
+
+Avec un compte Twilio d’essai, le numéro destinataire doit être vérifié dans la console.
+Pour recevoir réellement un SMS, utilisez les identifiants du compte, pas les anciens
+« Test Credentials » de Twilio : ces derniers ne contactent pas de téléphone réel.
+Le test peut consommer votre crédit Twilio et son texte peut représenter plusieurs segments SMS.
+
+Le suivi lit le statut réel de Twilio (accepté, en file, envoyé, distribué ou en échec),
+automatiquement pendant deux minutes puis via « Actualiser le suivi ». Aucun webhook public
+ni tunnel n’est nécessaire pour ce test. « Envoyé » signifie remis à l’opérateur, et n’est pas
+une confirmation de réception. Le dernier essai est conservé dans SQLite.
+
+Le numéro de test est limité à `TWILIO_TEST_TO`, avec 30 secondes entre deux essais.
+Un identifiant de test répété ne renvoie pas de SMS. En cas de délai réseau dépassé, consultez
+la console Twilio avant un nouvel essai : l’envoi peut avoir été accepté sans réponse reçue.
+
+Pour Docker, créez également le `.env` principal comme décrit plus bas, puis utilisez :
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.twilio.yml up -d --build front
+```
+
+Ouvrez `http://foot-easy.localhost/settings`. Le fichier de secrets est monté en lecture seule ;
+il est ignoré par Git et exclu de l’image Docker. Après une modification, redémarrez le service.
+Le mode local utilise une identité de développement et n’est pas destiné à être exposé en public.
+Les routes de test sont indisponibles dans le Worker hébergé, qui n’active pas ce mode.
+
+Références : [Messages API](https://www.twilio.com/docs/messaging/api/message-resource),
+[Authentification](https://www.twilio.com/docs/messaging/api),
+[Test Credentials](https://www.twilio.com/docs/iam/test-credentials).
 
 ## Publication et stockage
 

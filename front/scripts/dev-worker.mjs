@@ -5,6 +5,23 @@ import { mkdir, readFile, readdir, writeFile, unlink } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { pathToFileURL } from "node:url";
 import { context } from "esbuild";
+// Keep credentials inside this API process; Vite never receives them.
+try {
+  process.loadEnvFile(resolve(".dev.vars"));
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
+}
+const twilioKeys = [
+  "TWILIO_TEST_ENABLED",
+  "TWILIO_ACCOUNT_SID",
+  "TWILIO_AUTH_TOKEN",
+  "TWILIO_API_KEY_SID",
+  "TWILIO_API_KEY_SECRET",
+  "TWILIO_FROM_NUMBER",
+  "TWILIO_MESSAGING_SERVICE_SID",
+  "TWILIO_TEST_TO",
+];
+const localTwilio = Object.fromEntries(twilioKeys.map((key) => [key, process.env[key] || ""]));
 const directory = resolve(".local-data");
 await mkdir(directory, { recursive: true });
 const database = new DatabaseSync(resolve(directory, "club.sqlite"));
@@ -141,6 +158,8 @@ const server = createServer(async (req, res) => {
         ...(!["GET", "HEAD"].includes(req.method) ? { body: Buffer.concat(chunks) } : {}),
       }),
       {
+        LOCAL_DEVELOPMENT: "true",
+        ...localTwilio,
         DB: db,
         BUCKET: bucket,
         ASSETS: { fetch: async () => new Response("Vite serves the interface", { status: 404 }) },

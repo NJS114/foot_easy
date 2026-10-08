@@ -4,9 +4,10 @@ import { applyAction, syncCoreTasks } from "../src/workflows/engine";
 import { audit, iso, tick, uid, WorkflowError } from "../src/workflows/domain";
 import type { Campaign, FileRecord, WorkspaceState } from "../src/workflows/types";
 import { listFiles, loadWorkspace, persist } from "./storage";
+import { twilioRoutes, type LocalTwilioEnv } from "./twilio";
 import { notifyCoreChange } from "../src/workflows/notifications";
 
-export interface Env {
+export interface Env extends LocalTwilioEnv {
   DB: D1Database;
   BUCKET: R2Bucket;
   ASSETS: { fetch(request: Request): Promise<Response> };
@@ -405,6 +406,13 @@ function invitationCampaign(
 async function fetchApi(request: Request, env: Env, owner: string) {
   const path = new URL(request.url).pathname;
   const now = iso();
+  if (path.startsWith("/api/v2/providers/twilio"))
+    return twilioRoutes(
+      request,
+      env,
+      owner,
+      request.method === "POST" ? parse(await limitedBody(request, 10000)) : undefined,
+    );
   if (path.startsWith("/api/v2/files")) return fileRoutes(request, env, owner, path);
   const mutating = !["GET", "HEAD"].includes(request.method);
   const body = mutating

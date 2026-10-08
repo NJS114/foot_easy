@@ -1,0 +1,6 @@
+# Optional local test configuration. Create front/.dev.vars before using this override.
+# docker compose -f docker-compose.yml -f docker-compose.twilio.yml up -d --build front
+services:
+  front:
+    volumes:
+      - ./front/.dev.vars:/app/.dev.vars:ro

@@ -1,5 +1,6 @@
 import { useRemindPending } from "@/hooks/useInvitations";
 import { useState } from "react";
+import { TwilioTest } from "./TwilioTest";
 import { Link } from "react-router-dom";
 import { Download, Mail, ShieldCheck, FlaskConical } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,8 +35,8 @@ function Settings({ data }: { data: WorkspaceView }) {
           <div className="flow-info">
             <FlaskConical size={24} />
             <p>
-              Les emails, SMS, notifications et cartes bancaires sont simulés. Aucun compte Twilio,
-              service d’email ou prestataire bancaire n’est connecté.
+              Les campagnes email/SMS, notifications et cartes bancaires sont simulées. En local, le
+              panneau Twilio permet de tester un SMS réel sur le numéro configuré.
             </p>
           </div>
           <Select
@@ -110,6 +111,7 @@ function Settings({ data }: { data: WorkspaceView }) {
           </p>
         </Panel>
       </div>
+      <TwilioTest />
       <Panel title="Journal d’activité">
         <AuditTrail data={data} />
       </Panel>
